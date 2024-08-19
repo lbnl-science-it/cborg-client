@@ -2,15 +2,11 @@
 
 Client-side utilities for CBorg API Services
 
-`/continue`
-
-Provides a config.json and installer script for using CBorg models with the VS Code "Continue" plugin.
-
-Requires use of the CBorg client-side proxy service.
-
 `/proxy`
 
 This is a client-side reverse proxy service that streamlines use of the CBorg API:
+
+Use: Set your CBorg API key as an environment variable in CBORG_API_KEY.
 
 Features:
 
@@ -21,4 +17,10 @@ Features:
 - Handles client-side request cancellations cleanly, freeing up upstream resources instantly
 - Detects when client is on LBL-net or VPN, and switches endpoint automatically to locally-routed address to avoid cloudflare limiting & latency cost
 - Automagically injects user API key from environment variable: no need to store API keys in files or applications
+
+`/continue`
+
+Provides a config.json and installer script for using CBorg models with the VS Code "Continue" plugin.
+
+Requires use of the CBorg client-side proxy service.
 
