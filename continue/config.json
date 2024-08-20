@@ -4,22 +4,40 @@
 
   "models": [
     {
-      "title": "LBL-Hosted Llama",
-      "provider": "openai"
-      "model": "lbl/llama-3"
+      "title": "LBL/CBorgCoder",
+      "provider": "openai",
+      "model": "lbl/cborg-coder:latest",
+      "apiBase": "http://localhost:8001",
+      "apiKey": "none"
     },
     {
-      "title": "Openai/ChatGPT",
+      "title": "LBL/CBorgChat",
       "provider": "openai",
-      "model": "openai/gpt-4o"
+      "model": "lbl/cborg-chat:latest",
+      "apiBase": "http://localhost:8001",
+      "apiKey": "none"
+    },
+    {
+      "title": "OpenAI/ChatGPT",
+      "provider": "openai",
+      "model": "openai/chatgpt:latest",
+      "apiBase": "http://localhost:8001",
+      "apiKey": "none"
     },
     {
       "title": "Anthropic/Claude",
       "provider": "openai",
-      "model": "anthropic/claude-sonnet"
+      "model": "anthropic/claude:latest",
+      "apiBase": "http://localhost:8001",
+      "apiKey": "none"
+    },
+    {
+      "title": "Google/Gemini",
+      "provider": "openai",
+      "model": "google/gemini:latest",
+      "apiBase": "http://localhost:8001",
+      "apiKey": "none"
     }
-    // @todo add Gemini
-    // @todo make virtual endpoints with latest/recommended versions of each model
   ],
 
   "requestOptions": {
@@ -28,7 +46,7 @@
     }
   },
 
-  "systemMessage": "You are an expert programmer that works with highly educated scientists and engineers. You communicate using concise and technical language. When interacting with the user, be careful to provide only information that can be supported by factual references, and include the references with links to official documentation when possible. If you are not sure of your answer, apply a healthy degree of skepticism and err on the side of caution as to avoid guiding the user toward any potentially erroneous conclusions. Keep your responses concise and professional, with a minimum of unnecessary enthusiasm or fluff.",
+  "systemMessage": "You are an expert programmer and computer scientist that assists highly educated scientists and engineers with scientific programming projects and IT administration tasks. You communicate using concise and technical language. Your capabilities include writing code, editing code, debugging code, system design, system administration and IT troubleshooting. When interacting with the user, be careful to provide only information that can be supported by factual references, and include the references with links to official documentation when possible. If you are not sure of your answer, apply a healthy degree of skepticism and err on the side of caution as to avoid guiding the user toward any potentially erroneous conclusions. Keep your responses concise and professional, with a minimum of unnecessary enthusiasm or fluff.",
 
   "completionOptions": {
     "temperature": 0.0
@@ -43,24 +61,25 @@
   ],
 
   "tabAutocompleteModel": {
-    "title": "Deepseek Coder V2 Lite",
     "provider": "openai",
-    "model": "lbl/deepseek-coder-base",
+    "model": "lbl/cborg-coder-base:latest",
     "apiBase": "http://localhost:8002",
-    "contextLength": 131072
+    "contextLength": 131072,
+    "apiKey": "none"
   },
 
   "tabAutocompleteOptions": {
     "debounceDelay": 750,
-    "multilineCompletions": "auto",
+    "multilineCompletions": "always",
     "disableInFiles": ["*.csv", "*.txt", "*.md"]
-  }
+  },
 
   "embeddingsProvider": {
     "provider": "openai",
     "model": "lbl/nomic-embed-text",
-    "apiBase": "http://localhost:8003"
-  }
+    "apiBase": "http://localhost:8003",
+    "apiKey": "none"
+  },
 
   "contextProviders": [
     {
