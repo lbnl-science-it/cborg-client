@@ -13,3 +13,5 @@
    - Tab-style Autocompletion should work
    - Code can also be indexed and retrieved using nomic-embed-text embedding model
 
+IMPORTANT: Read this Quickstart Guide: https://docs.continue.dev/quickstart
+
