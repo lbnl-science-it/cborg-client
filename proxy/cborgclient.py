@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 
-    CBorg Client Plugin
-
-    
+    CBorg Client - Reverse Proxy Application and proxy.py Plugin
     
 """
 
@@ -204,9 +202,7 @@ class CBorgProxyPlugin(ReverseProxyBasePlugin):
             print('ERROR', str(e))
             return
 
-        print('GET LOCK...')
         cborg_upstream_acquire(self.current_port)
-        print('LOCK ACQUIRED...')
         return request
 
     def on_client_connection_close(self) -> None:
@@ -215,7 +211,6 @@ class CBorgProxyPlugin(ReverseProxyBasePlugin):
         pass
 
     def on_access_log(self, context: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        print('LOCK RELEASED...')
         cborg_upstream_release(self.current_port)
         self.current_port = None
         return context
@@ -235,7 +230,7 @@ class CBorgProxyPlugin(ReverseProxyBasePlugin):
         except Exception as e:
             print('ROUTING ERROR', str(e))
         return choice
-
+    
 
 if __name__ == '__main__':
 
