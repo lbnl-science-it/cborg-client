@@ -43,12 +43,7 @@ e.g. VSCode with  ==>  http://localhost:8001  ==>  https://api-local.cborg.lbl.g
 
 The proxy service on port 8001 will automatically inject your API keys, therefore API keys do not need to be stored in the user application.
 
-In addition, it will detect when your system is connected to LBL-net (via ethernet, employee wireless or VPN) and automatically switch the endpoint to https://api-local.cborg.lbl.gov.
-
-Use port 8001 for chat completions. Use port 8002 for embeddings, and port 8003 for code completion (fill-in-the-middle).
-
-Parallel requests to the local ports will be sequentially queued. If a client cancels the connection mid-stream the resource will be freed up immediately.
-
+Use port 8001 for chat completions. Use port 8002 for embeddings, and port 8003 for code completion (fill-in-the-middle). This will enable the different types of requests to execute in parallel.
 
 ## VS Code Continue Configuration File
 
