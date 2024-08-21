@@ -19,10 +19,19 @@ This is a client-side reverse proxy service that streamlines use of the CBorg AP
 
 ### How it works:
 
+#### When Client is on Public Internet
+
+```
+User Application       CBorg Client Proxy                           CBorg API Server
+e.g. VSCode with  ==>  http://localhost:8001  ==>  Cloudflare  ==>  https://api.cborg.lbl.gov
+     "Continue"
 ```
 
-User Application     CBorg Client Proxy        CBorg API Server
-e.g. VSCode with ==> http://localhost:8001 ==> https://api.cborg.lbl.gov
+#### When Client is on LBL-Net
+
+```
+User Application       CBorg Client Proxy          CBorg API Server
+e.g. VSCode with  ==>  http://localhost:8001  ==>  https://api-local.cborg.lbl.gov
      "Continue"
 ```
 
