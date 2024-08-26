@@ -1,3 +1,5 @@
 .DS_Store
-__pycache__
-build
+app/__pycache__
+app/build
+app/dist
+
