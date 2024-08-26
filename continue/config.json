@@ -4,7 +4,7 @@
 
   "models": [
     {
-      "title": "LBL/CBorgCoder",
+      "title": "LBL/CBorg Coder",
       "provider": "openai",
       "model": "lbl/cborg-coder:latest",
       "contextLength": 131072,
@@ -63,16 +63,18 @@
   },
 
   "tabAutocompleteModel": {
+    "title": "LBL/CBorg Coder Base",
     "provider": "openai",
     "model": "lbl/cborg-coder-base:latest",
     "apiBase": "http://127.0.0.1:8003",
-    "contextLength": 131072,
+    "contextLength": 32768,
     "apiKey": "none"
   },
 
   "tabAutocompleteOptions": {
-    "debounceDelay": 750,
+    "debounceDelay": 500,
     "multilineCompletions": "always",
+    "useCache": false,
     "disableInFiles": ["*.csv", "*.txt", "*.md"]
   },
 
