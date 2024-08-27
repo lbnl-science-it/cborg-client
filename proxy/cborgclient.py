@@ -133,6 +133,7 @@ def cborg_upstream_acquire(port):
 
 def cborg_upstream_release(port):
     global cborg_upstream_locks
+    time.sleep(0.01)
     fcntl.flock(cborg_upstream_locks[port], fcntl.LOCK_UN)
 
 def sig_handler(sig, frame):
@@ -254,11 +255,11 @@ if __name__ == '__main__':
 
     sys.argv = [
         './cborgclient.py', 
-        '--num-acceptors', '8', 
-        '--num-workers', '8', 
+        '--num-acceptors', '3', 
+        '--num-workers', '3', 
         '--enable-reverse-proxy', 
         '--plugins', 'CBorgProxyPlugin', 
-        '--timeout', '180', 
+        '--timeout', '60', 
         '--port', '8001', 
         '--ports', '8002', '8003', 
         '--log-level', 'INFO'
