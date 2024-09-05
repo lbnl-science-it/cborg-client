@@ -154,19 +154,30 @@ class CBorgNetworkMonitor:
 cborg_client_on_lblnet = multiprocessing.Event()
 cborg_client_on_lblnet.clear()
 
+# proxy.py is multi-process on OSX/darwin, but is multithreaded on Linux
+proxy_mode_threaded = (sys.platform != 'darwin')
+
 if multiprocessing.current_process().name == "MainProcess":
 
-    print("cborg-client: Starting Main Process...")
+    print("cborg-client: Starting Usage Monitoring Thread...")
 
     cborg_usage_monitor = CBorgUsageMonitor()
     cborg_usage_monitor_thread = threading.Thread(target=cborg_usage_monitor.run_monitor, daemon=True)
     cborg_usage_monitor_thread.start()
 
-else:
+if proxy_mode_threaded or multiprocessing.current_process().name != "MainProcess":
 
-    print("cborg-client: Starting Acceptor Subprocess...")
+    # only want to print this once
+    if proxy_mode_threaded or multiprocessing.current_process().name.endswith('-1'):
+        print("cborg-client: Starting Network Connection Monitor...")
 
-    cborg_network_monitor = CBorgNetworkMonitor(silent=(multiprocessing.current_process().name != 'Acceptor-1'))
+    cborg_network_monitor = CBorgNetworkMonitor(silent=(
+        not (
+            proxy_mode_threaded or
+            multiprocessing.current_process().name.endswith('-1')
+        )
+    ))
+
     if cborg_network_monitor.is_on_lblnet():
         cborg_client_on_lblnet.set()
 
