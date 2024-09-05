@@ -183,9 +183,10 @@ class CBorgNetworkMonitor:
         try:
             response = requests.get('https://api.ipify.org?format=json')
             response.raise_for_status()
+            print("cborg-client: Public IP", response.json()['ip'])
             return response.json()['ip']
         except requests.RequestException as e:
-            #print(f"Error fetching public IP: {e}")
+            print(f"cborg-client: Error fetching public IP: {e}")
             return None
 
     def is_ip_in_subnet(self, ip, subnet):
