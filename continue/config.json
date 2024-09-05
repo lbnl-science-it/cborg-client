@@ -67,15 +67,16 @@
     "provider": "openai",
     "model": "lbl/cborg-coder-base:latest",
     "apiBase": "http://127.0.0.1:8003",
-    "contextLength": 32768,
+    "contextLength": 16384,
     "apiKey": "none"
   },
 
   "tabAutocompleteOptions": {
     "debounceDelay": 500,
-    "multilineCompletions": "always",
+    "multilineCompletions": "auto",
     "disableInFiles": ["*.csv", "*.txt", "*.md"],
-    "maxPromptTokens": 2048
+    "maxPromptTokens": 16384,
+    "useCache": true
   },
 
   "contextProviders": [
@@ -85,6 +86,10 @@
     },
     {
       "name": "docs",
+      "params": {}
+    },
+    {
+      "name": "url",
       "params": {}
     },
     {
