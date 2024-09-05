@@ -93,6 +93,13 @@ class CBorgNetworkMonitor:
 
     on_lbl_net = None
 
+    lbl_subnets = [
+        '128.3.0.0/16',
+        '131.243.0.0/16'
+    ]
+
+    if_addrs = None
+
     def __init__(self, silent=True):
         self.silent = silent
         self.exit_signal = multiprocessing.Event()
@@ -104,32 +111,103 @@ class CBorgNetworkMonitor:
     def run_monitor(self):
         global cborg_client_on_lblnet
 
+        sleep_counter = 0
+
+        # startup
+        # list interfaces
+        # if any are on lbl-net, return True
+
+        # if NOT on lbl-net, check if public IP is on LBLNet (behind firewall)
+
+        # if network interfaces list changes, recheck the above
+
         while not self.exit_signal.is_set():
 
-            if self.is_on_lblnet():
+            any_match = False
+
+            if self.get_if_addrs():
+                for ip in self.if_addrs:
+                    for subnet in self.lbl_subnets:
+                        if self.is_ip_in_subnet(ip, subnet):
+                            any_match = True
+                            break
+                if not any_match:
+                    ip = self.get_public_ip()
+                    if ip is not None and self.is_ip_in_subnet(ip, subnet):
+                        any_match = True
+
+            if any_match:
                 cborg_client_on_lblnet.set()
+
+                # report change if relevant
+                if not self.silent and (self.on_lbl_net is None or self.on_lbl_net is False):
+                    print("cborg-client: LBLNet Connected: Setting endpoint to https://api-local.cborg.lbl.net")
+                self.on_lbl_net = True
+
             else:
+                if not self.silent and (self.on_lbl_net is None or self.on_lbl_net is True):
+                    print("cborg-client: Not on LBLNet: Setting endpoint to https://api.cborg.lbl.net")
+                self.on_lbl_net = False
                 cborg_client_on_lblnet.clear()
 
-            time.sleep(1)
+            sleep_counter = 0
+            while sleep_counter < 10 and not self.exit_signal.is_set():
+                sleep_counter += 1
+                time.sleep(1)
+
+    # return True if if addr list has changed
+    def get_if_addrs(self):
+
+        interfaces = ni.interfaces()
+
+        ips = []
+
+        # Iterate over all interfaces
+        for interface in interfaces:
+            # Get the IP address and netmask for the interface
+            ip = ni.ifaddresses(interface).get(ni.AF_INET, [{}])[0].get('addr')
+            if ip is not None:
+                ips.append(ip)
+
+        if self.if_addrs is None:
+            self.if_addrs = ips
+            return True
+        elif self.if_addrs != ips:
+            self.if_addrs = ips
+            return True
+        else:
+            return False
+
+    def get_public_ip(self):
+        try:
+            response = requests.get('https://api.ipify.org?format=json')
+            response.raise_for_status()
+            return response.json()['ip']
+        except requests.RequestException as e:
+            #print(f"Error fetching public IP: {e}")
+            return None
+
+    def is_ip_in_subnet(self, ip, subnet):
+        try:
+            ip_obj = ipaddress.ip_address(ip)
+            subnet_obj = ipaddress.ip_network(subnet)
+            return ip_obj in subnet_obj
+        except ValueError as e:
+            print(f"Error parsing IP or subnet: {e}", ip, subnet)
+            return False
+
 
     def is_on_lblnet(self):
         """
         Returns True if the computer is connected to the LBL network
         """
-        subnets = [
-            '128.3.0.0/16',
-            '131.243.0.0/16'
-        ]
-
         try:
-            for subnet in subnets:
+            for subnet in self.lbl_subnets:
                 # Get all network interfaces
                 interfaces = ni.interfaces()
                 
                 # Iterate over all interfaces
                 for interface in interfaces:
-
                     # Get the IP address and netmask for the interface
                     ip = ni.ifaddresses(interface).get(ni.AF_INET, [{}])[0].get('addr')
                     netmask = ni.ifaddresses(interface).get(ni.AF_INET, [{}])[0].get('netmask')
@@ -139,16 +217,9 @@ class CBorgNetworkMonitor:
                         ip_int = ipaddress.ip_address(ip)
                         subnet_int = ipaddress.ip_network(subnet, strict=False)
                         if ip_int in subnet_int:
-                            # print a message when LBL net connected
-                            if not self.silent and (self.on_lbl_net is None or self.on_lbl_net is False):
-                                print("cborg-client: LBLNet Connected: Setting endpoint to https://api-local.cborg.lbl.net")
-                            self.on_lbl_net = True
                             return True
         except Exception as e:
             print(f"cborg-client: ERROR:", e)
-        if not self.silent and (self.on_lbl_net is None or self.on_lbl_net is True):
-            print("cborg-client: Not on LBLNet: Setting endpoint to https://api.cborg.lbl.net")
-            self.on_lbl_net = False
         return False
 
 cborg_client_on_lblnet = multiprocessing.Event()
