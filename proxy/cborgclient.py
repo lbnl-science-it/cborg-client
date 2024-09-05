@@ -196,7 +196,6 @@ def cborg_upstream_acquire(port):
 
 def cborg_upstream_release(port):
     global cborg_upstream_locks
-    time.sleep(0.01)
     fcntl.flock(cborg_upstream_locks[port], fcntl.LOCK_UN)
 
 class CBorgProxyPlugin(ReverseProxyBasePlugin):
