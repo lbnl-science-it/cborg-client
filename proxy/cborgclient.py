@@ -133,8 +133,9 @@ class CBorgNetworkMonitor:
                             break
                 if not any_match:
                     ip = self.get_public_ip()
-                    if ip is not None and self.is_ip_in_subnet(ip, subnet):
-                        any_match = True
+                    for subnet in self.lbl_subnets:
+                        if ip is not None and self.is_ip_in_subnet(ip, subnet):
+                            any_match = True
 
             if any_match:
                 cborg_client_on_lblnet.set()
