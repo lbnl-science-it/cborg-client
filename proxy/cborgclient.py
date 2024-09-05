@@ -54,11 +54,47 @@ import netifaces as ni
 import ipaddress
 
 import multiprocessing
+import threading
 import signal
+
+import json
+import requests
+
+class CBorgUsageMonitor:
+
+    def __init__(self):
+        self.exit_signal = multiprocessing.Event()
+        self.exit_signal.clear()
+
+    def stop_monitor(self):
+        self.exit_signal.set()
+
+    def run_monitor(self):
+        time.sleep(1)
+        self.check_usage()
+        while not self.exit_signal.is_set():
+            time.sleep(120)
+            self.check_usage()
+
+    def check_usage(self):
+
+        url = "http://127.0.0.1:8002/key/info"
+
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            info = response.json()['info']
+            print(f"cborg-client: Key: {info['key_alias']} Spend: {info['spend']} Budget: {info['max_budget']}")
+        else:
+            print("cborg-client: Key Info: ERROR:", response.status_code)
+
 
 class CBorgNetworkMonitor:
 
-    def __init__(self):
+    on_lbl_net = None
+
+    def __init__(self, silent=True):
+        self.silent = silent
         self.exit_signal = multiprocessing.Event()
         self.exit_signal.clear()
 
@@ -103,29 +139,56 @@ class CBorgNetworkMonitor:
                         ip_int = ipaddress.ip_address(ip)
                         subnet_int = ipaddress.ip_network(subnet, strict=False)
                         if ip_int in subnet_int:
+                            # print a message when LBL net connected
+                            if not self.silent and (self.on_lbl_net is None or self.on_lbl_net is False):
+                                print("cborg-client: LBLNet Connected: Setting endpoint to https://api-local.cborg.lbl.net")
+                            self.on_lbl_net = True
                             return True
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"cborg-client: ERROR:", e)
+        if not self.silent and (self.on_lbl_net is None or self.on_lbl_net is True):
+            print("cborg-client: Not on LBLNet: Setting endpoint to https://api.cborg.lbl.net")
+            self.on_lbl_net = False
         return False
 
 cborg_client_on_lblnet = multiprocessing.Event()
 cborg_client_on_lblnet.clear()
 
-cborg_network_monitor = CBorgNetworkMonitor()
-if cborg_network_monitor.is_on_lblnet():
-    cborg_client_on_lblnet.set()
+if multiprocessing.current_process().name == "MainProcess":
 
-import threading
-cborg_network_monitor_thread = threading.Thread(target=cborg_network_monitor.run_monitor, daemon=True)
-cborg_network_monitor_thread.start()
+    print("cborg-client: Starting Main Process...")
 
-parent_pid = os.getppid()
+    cborg_usage_monitor = CBorgUsageMonitor()
+    cborg_usage_monitor_thread = threading.Thread(target=cborg_usage_monitor.run_monitor, daemon=True)
+    cborg_usage_monitor_thread.start()
 
-cborg_upstream_locks = {
-    '8001': open('/tmp/cborg_upstream-' + str(parent_pid) + '-' + str(8001) + '.flock', "w"),
-    '8002': open('/tmp/cborg_upstream-' + str(parent_pid) + '-' + str(8002) + '.flock', "w"),
-    '8003': open('/tmp/cborg_upstream-' + str(parent_pid) + '-' + str(8003) + '.flock', "w"),
-}
+else:
+
+    print("cborg-client: Starting Acceptor Subprocess...")
+
+    cborg_network_monitor = CBorgNetworkMonitor(silent=(multiprocessing.current_process().name != 'Acceptor-1'))
+    if cborg_network_monitor.is_on_lblnet():
+        cborg_client_on_lblnet.set()
+
+    cborg_network_monitor_thread = threading.Thread(target=cborg_network_monitor.run_monitor, daemon=True)
+    cborg_network_monitor_thread.start()
+
+    def sig_handler(sig, frame):
+        global cborg_network_monitor, cborg_network_monitor_thread
+        cborg_network_monitor.stop_monitor()
+        cborg_network_monitor_thread.join()
+
+    signal.signal(signal.SIGTERM, sig_handler)
+    signal.signal(signal.SIGINT, sig_handler)
+
+    parent_pid = os.getppid()
+
+    cborg_upstream_locks = {
+        '8001': open('/tmp/cborg_upstream-' + str(parent_pid) + '-' + str(8001) + '.flock', "w"),
+        '8002': open('/tmp/cborg_upstream-' + str(parent_pid) + '-' + str(8002) + '.flock', "w"),
+        '8003': open('/tmp/cborg_upstream-' + str(parent_pid) + '-' + str(8003) + '.flock', "w"),
+    }
+
 
 def cborg_upstream_acquire(port):
     global cborg_upstream_locks
@@ -136,18 +199,14 @@ def cborg_upstream_release(port):
     time.sleep(0.01)
     fcntl.flock(cborg_upstream_locks[port], fcntl.LOCK_UN)
 
-def sig_handler(sig, frame):
-    global cborg_network_monitor, cborg_network_monitor_thread
-    cborg_network_monitor.stop_monitor()
-    cborg_network_monitor_thread.join()
-
-signal.signal(signal.SIGTERM, sig_handler)
-signal.signal(signal.SIGINT, sig_handler)
-
 class CBorgProxyPlugin(ReverseProxyBasePlugin):
 
     # user set the API key in the environment here...
     cborg_api_key = os.environ.get('CBORG_API_KEY')
+
+    if cborg_api_key is None:
+        print("cborg-client: ERROR: CBORG_API_KEY environment variable not set. Exiting.")
+        sys.exit(1)
 
     current_port = None
 
@@ -160,6 +219,13 @@ class CBorgProxyPlugin(ReverseProxyBasePlugin):
     def before_routing(self, request: HttpParser) -> Optional[HttpParser]:
 
         try:
+
+            try:
+                model = json.loads(str(request.body, encoding='utf-8'))['model']
+            except Exception as e:
+                model = None
+
+            print("cborg-client: Request " + (model if model is not None else '') + str(request.path, encoding='utf-8'))
 
             # Host header is required, with a port
             # request.port does not have correct information, so we extract it from the host header
@@ -188,9 +254,9 @@ class CBorgProxyPlugin(ReverseProxyBasePlugin):
             if request.has_header(b'Content-Length'):
                 request.del_header(b'Content-Length')
 
-            # If Keep-Alive connections are allowed, parallel connection attempts will be forced to wait for first connection to close
-            # Simpler to just force all connections to close even though there is a minor performance penalty
-            # Proxy.py can use upstream connection pooling anyway
+            # If Keep-Alive connections are allowed, parallel connection attempts 
+            # will be forced to wait for first connection to close; this is not ideal for chat
+            # For now we will force a connection close on all requests
             if request.has_header(b'Connection'):
                 request.del_header(b'Connection')
 
@@ -222,11 +288,11 @@ class CBorgProxyPlugin(ReverseProxyBasePlugin):
             return
 
         cborg_upstream_acquire(self.current_port)
-        return request
+        return request 
 
     def on_client_connection_close(self) -> None:
         """Client has closed the connection, do any clean up task now."""
-        print("Connection Closed by Client")
+        print("cborg-client: Connection Closed by Client")
         pass
 
     def on_access_log(self, context: Dict[str, Any]) -> Optional[Dict[str, Any]]:
@@ -247,7 +313,7 @@ class CBorgProxyPlugin(ReverseProxyBasePlugin):
             else:
                 choice: Url = Url.from_bytes(b'https://api.cborg.lbl.gov' + request.path)
         except Exception as e:
-            print('ROUTING ERROR', str(e))
+            print('cborg-client: ERROR:', str(e))
         return choice
     
 
@@ -259,12 +325,12 @@ if __name__ == '__main__':
         '--num-workers', '3', 
         '--enable-reverse-proxy', 
         '--plugins', 'CBorgProxyPlugin', 
-        '--timeout', '60', 
+        '--timeout', '120', 
         '--port', '8001', 
         '--ports', '8002', '8003', 
-        '--log-level', 'INFO'
+        '--log-level', 'ERROR'
         ]
-    
+
     m = CBorgNetworkMonitor()
 
     sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
