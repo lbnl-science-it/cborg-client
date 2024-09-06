@@ -2,20 +2,20 @@
 
 Client-side utilities for CBorg API Services
 
+**Contents:**
+
+/proxy: Client-side reverse proxy
+/continue: Managed config.json file for VS Code Continue Plugin
+/app: Mac OSX Menu-bar App for Client-side proxy (in development - not working yet)
+
 ## Client-side Reverse Proxy Service
 
-This is a client-side reverse proxy service that streamlines use of the CBorg API.
-
-### Features:
-
-- Detects when client is on LBLNet / VPN, and switches endpoint automatically to locally-routed address to avoid Cloudflare limiting
-- Automagically injects user API key from environment variable: no need to store API keys in files or applications
-- Allows multiple applications on client system to share a pool of upstream connections
-- Enables low-latency embedding calls to execute in parallel with completion calls
-- Queues chat completion calls, only allowing one to process at a time
-- Periodically monitors and reports key usage and maximum budget
-
 ### How it works:
+
+The proxy service runs on your local machine, enabling LLM completion requests to be directed to
+ports 8001-8003 on localhost. API keys are injected automatically from the $CBORG_API_KEY environment variable.
+In addition, the proxy service monitors your key usage (budget) and network connectivity status, automatically
+routing traffic to the Cloudflare-based endpoint or the LBLNet-routed endpoint depending on network status.
 
 #### When Client is on Public Internet
 
@@ -32,6 +32,15 @@ User Application       CBorg Client Proxy          lb1.bk.lbl.gov     CBorg API 
 e.g. VSCode with  ==>  http://localhost:8001  ==>  nginx Ingress   => https://api-local.cborg.lbl.gov
      "Continue"
 ```
+
+### Features:
+
+- Detects when client is on LBLNet / VPN, and switches endpoint automatically to locally-routed address to avoid Cloudflare limiting
+- Automagically injects user API key from environment variable: no need to store API keys in files or applications
+- Allows multiple applications on client system to share a pool of upstream connections
+- Enables low-latency embedding calls to execute in parallel with completion calls
+- Queues chat completion calls, only allowing one to process at a time
+- Periodically monitors and reports key usage and maximum budget
 
 ### Instructions:
 
