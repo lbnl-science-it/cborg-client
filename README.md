@@ -4,9 +4,9 @@ Client-side utilities for CBorg API Services
 
 **Contents:**
 
-/proxy: Client-side reverse proxy
-/continue: Managed config.json file for VS Code Continue Plugin
-/app: Mac OSX Menu-bar App for Client-side proxy (in development - not working yet)
+- /proxy: Client-side reverse proxy
+- /continue: Managed config.json file for VS Code Continue Plugin
+- /app: Mac OSX Menu-bar App for Client-side proxy (in development - not working yet)
 
 ## Client-side Reverse Proxy Service
 
