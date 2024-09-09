@@ -1,0 +1,15 @@
+fastapi
+starlette
+uvicorn
+netifaces
+rumps
+setuptools
+macholib
+modulegraph
+jaraco.text
+proxy.py
+pyobjc
+requests
+chardet
+charset-normalizer
+certifi
