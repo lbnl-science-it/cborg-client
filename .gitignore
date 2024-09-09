@@ -1,5 +1,7 @@
 .DS_Store
+app/.eggs
 app/__pycache__
 app/build
 app/dist
+app/venv
 
