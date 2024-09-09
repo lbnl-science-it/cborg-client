@@ -70,7 +70,7 @@ class CBorgUsageMonitor:
         self.exit_signal.set()
 
     def run_monitor(self):
-        time.sleep(1)
+        time.sleep(5)
         self.check_usage()
         while not self.exit_signal.is_set():
             time.sleep(120)
@@ -137,19 +137,19 @@ class CBorgNetworkMonitor:
                         if ip is not None and self.is_ip_in_subnet(ip, subnet):
                             any_match = True
 
-            if any_match:
-                cborg_client_on_lblnet.set()
+                if any_match:
+                    cborg_client_on_lblnet.set()
 
-                # report change if relevant
-                if not self.silent and (self.on_lbl_net is None or self.on_lbl_net is False):
-                    print("cborg-client: LBLNet Connected: Setting endpoint to https://api-local.cborg.lbl.net")
-                self.on_lbl_net = True
+                    # report change if relevant
+                    if not self.silent and (self.on_lbl_net is None or self.on_lbl_net is False):
+                        print("cborg-client: LBLNet Connected: Setting endpoint to https://api-local.cborg.lbl.net")
+                    self.on_lbl_net = True
 
-            else:
-                if not self.silent and (self.on_lbl_net is None or self.on_lbl_net is True):
-                    print("cborg-client: Not on LBLNet: Setting endpoint to https://api.cborg.lbl.net")
-                self.on_lbl_net = False
-                cborg_client_on_lblnet.clear()
+                else:
+                    if not self.silent and (self.on_lbl_net is None or self.on_lbl_net is True):
+                        print("cborg-client: Not on LBLNet: Setting endpoint to https://api.cborg.lbl.net")
+                    self.on_lbl_net = False
+                    cborg_client_on_lblnet.clear()
 
             sleep_counter = 0
             while sleep_counter < 10 and not self.exit_signal.is_set():
@@ -267,11 +267,14 @@ if proxy_mode_threaded or multiprocessing.current_process().name != "MainProcess
 
     parent_pid = os.getppid()
 
-    cborg_upstream_locks = {
-        '8001': open('/tmp/cborg_upstream-' + str(parent_pid) + '-' + str(8001) + '.flock', "w"),
-        '8002': open('/tmp/cborg_upstream-' + str(parent_pid) + '-' + str(8002) + '.flock', "w"),
-        '8003': open('/tmp/cborg_upstream-' + str(parent_pid) + '-' + str(8003) + '.flock', "w"),
-    }
+    try:
+        cborg_upstream_locks = {
+            '8001': open('/tmp/cborg_upstream-' + str(parent_pid) + '-' + str(8001) + '.flock', "w"),
+            '8002': open('/tmp/cborg_upstream-' + str(parent_pid) + '-' + str(8002) + '.flock', "w"),
+            '8003': open('/tmp/cborg_upstream-' + str(parent_pid) + '-' + str(8003) + '.flock', "w"),
+        }
+    except Exception as e:
+        print("cborg-client: ERROR", e)
 
 
 def cborg_upstream_acquire(port):
