@@ -28,8 +28,8 @@ e.g. VSCode with  ==>  http://localhost:8001  ==>   Tunnel    ==>  https://api.c
 #### When Client is on LBL-Net
 
 ```
-User Application       CBorg Client Proxy          lb1.bk.lbl.gov     CBorg API Server
-e.g. VSCode with  ==>  http://localhost:8001  ==>  nginx Ingress   => https://api-local.cborg.lbl.gov
+User Application       CBorg Client Proxy          CBorg API Server
+e.g. VSCode with  ==>  http://localhost:8001  ==>  https://api-local.cborg.lbl.gov
      "Continue"
 ```
 
