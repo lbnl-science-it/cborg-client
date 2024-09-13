@@ -3,3 +3,5 @@ starlette
 uvicorn
 netifaces
 proxy.py
+requests
+
