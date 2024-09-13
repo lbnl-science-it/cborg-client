@@ -2,7 +2,9 @@
 
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 
-pip install -r $SCRIPT_DIR/requirements.txt 1>/dev/null 2>&1
+source $SCRIPT_DIR/venv/bin/activate
 
-PYTHONPATH=$SCRIPT_DIR/proxy.py python $SCRIPT_DIR/cborgclient.py
+python3 $SCRIPT_DIR/cborgclient.py
+
+deactivate
 
