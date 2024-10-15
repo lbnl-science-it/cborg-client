@@ -9,7 +9,8 @@
       "model": "lbl/cborg-coder:latest",
       "contextLength": 131072,
       "apiBase": "http://127.0.0.1:8001",
-      "apiKey": "none"
+      "apiKey": "none",
+      "useLegacyCompletionsEndpoint": false
     },
     {
       "title": "OpenAI/ChatGPT",
@@ -67,15 +68,15 @@
     "provider": "openai",
     "model": "lbl/cborg-coder-base:latest",
     "apiBase": "http://127.0.0.1:8003",
-    "contextLength": 16384,
+    "contextLength": 8192,
     "apiKey": "none"
   },
 
   "tabAutocompleteOptions": {
-    "debounceDelay": 500,
+    "debounceDelay": 250,
     "multilineCompletions": "auto",
     "disableInFiles": ["*.csv", "*.txt", "*.md"],
-    "maxPromptTokens": 16384,
+    "maxPromptTokens": 8192,
     "useCache": true
   },
 

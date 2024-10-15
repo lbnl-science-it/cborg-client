@@ -15,7 +15,8 @@
       "provider": "openai",
       "model": "lbl/cborg-coder:latest",
       "contextLength": 131072,
-      "apiBase": "https://api.cborg.lbl.gov"
+      "apiBase": "https://api.cborg.lbl.gov",
+      "useLegacyCompletionsEndpoint": false
     },
     {
       "title": "OpenAI/ChatGPT",
@@ -42,6 +43,10 @@
 
   "completionOptions": {
     "temperature": 0.0
+  },
+
+  "tabAutocompleteOptions": {
+    "disable": true
   },
 
   "customCommands": [
