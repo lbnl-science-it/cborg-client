@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 
-    CBorg Client - Reverse Proxy Application and proxy.py Plugin
+    CBorg Client Proxy - Reverse Proxy / proxy.py Plugin
 
     Copyright Notice
     ================
@@ -84,9 +84,24 @@ class CBorgUsageMonitor:
 
         if response.status_code == 200:
             info = response.json()['info']
-            print(f"cborg-client: Key: {info['key_alias']} Spend: {info['spend']} Budget: {info['max_budget']}")
+            if "@" not in info['user_id']:
+                print(f"cborg-client: Usage: User: {info['key_alias']} Spend: {info['spend']} Budget: {info['max_budget']}")
+
+            else:
+                url = "http://127.0.0.1:8002/user/info"
+                
+                response = requests.get(url, 
+                                        params={'user_id': info['key_alias']}
+                                        )
+
+                if response.status_code == 200:
+                    info = response.json()['user_info']
+                    print(f"cborg-client: Usage: User: {info['user_id']} Spend: {info['spend']} Budget: {info['max_budget']}")
+                else:
+                    print("cborg-client: ERROR in Get User Info:", response.status_code)
+
         else:
-            print("cborg-client: Key Info: ERROR:", response.status_code)
+            print("cborg-client: ERROR in Get Key Info:", response.status_code)
 
 
 class CBorgNetworkMonitor:
@@ -307,11 +322,19 @@ class CBorgProxyPlugin(ReverseProxyBasePlugin):
         try:
 
             try:
-                model = json.loads(str(request.body, encoding='utf-8'))['model']
+                body_json = json.loads(str(request.body, encoding='utf-8'))
+            except Exception as e:
+                body_json = None
+
+            try:
+                model = body_json['model']
             except Exception as e:
                 model = None
 
             print("cborg-client: Request " + (model if model is not None else '') + str(request.path, encoding='utf-8'))
+
+            if body_json is not None and os.environ.get('CBORG_CLIENT_DEBUG') == '1':
+                print(body_json)
 
             # Host header is required, with a port
             # request.port does not have correct information, so we extract it from the host header
