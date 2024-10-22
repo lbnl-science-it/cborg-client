@@ -33,7 +33,7 @@ cp ./easy-setup-config.json ~/.continue/config.json
 
 1. Install VS Code "Continue" Plugin
 
-2. Run ./install-vscode-continue.sh - 
+2. Run ./install-vscode-continue.sh 
    This script will replace the default config.json with the managed version in this directory
 
 3. Install and start the CBorg Client-side Proxy (see /proxy directory)
@@ -41,5 +41,7 @@ cp ./easy-setup-config.json ~/.continue/config.json
 4. Start VS Code.
 
    - Chat Models will be available in the side pane, and other editor functions
+   - Code generation/editing model will correspond to whatever model is selected in the chat side pane
    - Tab-style Autocompletion also works (may take around 1-2 seconds to generate)
    - Full codebase can be indexed and retrieved using embedding model to enhance autocompletion
+   - To debug LLM prompting, open Console, select "Continue - LLM Prompt/Completion"
