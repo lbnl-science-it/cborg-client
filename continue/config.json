@@ -21,6 +21,14 @@
       "apiKey": "none"
     },
     {
+      "title": "OpenAI/o1",
+      "provider": "openai",
+      "model": "openai/o1",
+      "contextLength": 131072,
+      "apiBase": "http://127.0.0.1:8001",
+      "apiKey": "none"
+    },
+    {
       "title": "Anthropic/Claude",
       "provider": "openai",
       "model": "anthropic/claude:latest",
@@ -40,7 +48,7 @@
 
   "requestOptions": {
     "headers": {
-      "X-CBorg-Continue-ConfigVersion": 0.1
+      "X-CBorg-Continue-ConfigVersion": 0.2
     }
   },
 

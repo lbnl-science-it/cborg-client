@@ -26,6 +26,14 @@
       "apiBase": "https://api.cborg.lbl.gov"
     },
     {
+      "title": "OpenAI/ChatGPT",
+      "provider": "openai",
+      "model": "openai/chatgpt:latest",
+      "contextLength": 131072,
+      "apiBase": "http://127.0.0.1:8001",
+      "apiKey": "none"
+    },
+    {
       "title": "Anthropic/Claude",
       "provider": "openai",
       "model": "anthropic/claude:latest",
