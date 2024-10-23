@@ -6,7 +6,7 @@ echo "Checking for updates..."
 cd $SCRIPT_DIR && git pull
 
 echo "Activate Virtual Environment"
-source $SCRIPT_DIR/venv/bin/activate
+. $SCRIPT_DIR/venv/bin/activate
 
 echo "Python Version Check: "
 python3 -V
