@@ -2,7 +2,7 @@
 
 Integration of CBorg with VS Code "Continue" will enable chat within VS code, in addithion to autocomplete and code indexing.
 
-Instructions: 
+## Instructions: 
 
 1. Install VS Code "Continue" Plugin
 
@@ -37,4 +37,11 @@ The "Client Proxy" (proxy/cborgclient.py) is no longer recommended, but is still
 ## How to Debug VS Code "Continue" Plugin
 
 Open the VS Code Console, select "Continue - LLM Prompt/Completion". It will show you the actual contents of prompts being transmitted to the server.
+
+## Note about config.yaml
+
+Continue is moving to a new config format, `config.yaml`. Currently this is not supported with the CBorg setup, but the config.json is still supported by Continue.
+
+Make sure that your setup does not also include a `config.yaml` file as the two methods will conflict and defer to the YAML source. The installation script will remove the YAML file if necessary.
+
 
