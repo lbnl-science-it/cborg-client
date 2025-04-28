@@ -6,7 +6,7 @@
     Copyright Notice
     ================
 
-    Copyright (c) 2024, The Regents of the University of California, 
+    Copyright (c) 2025, The Regents of the University of California, 
     through Lawrence Berkeley National Laboratory (subject to receipt 
     of any required approvals from the U.S. Dept. of Energy). All rights reserved.
 
@@ -294,10 +294,12 @@ if proxy_mode_threaded or multiprocessing.current_process().name != "MainProcess
 
 def cborg_upstream_acquire(port):
     global cborg_upstream_locks
+    print("Lock Acquire")
     fcntl.flock(cborg_upstream_locks[port], fcntl.LOCK_EX)
 
 def cborg_upstream_release(port):
     global cborg_upstream_locks
+    print("Lock Release")
     fcntl.flock(cborg_upstream_locks[port], fcntl.LOCK_UN)
 
 class CBorgProxyPlugin(ReverseProxyBasePlugin):
@@ -396,7 +398,7 @@ class CBorgProxyPlugin(ReverseProxyBasePlugin):
             print('ERROR', str(e))
             return
 
-        cborg_upstream_acquire(self.current_port)
+        #cborg_upstream_acquire(self.current_port)
         return request 
 
     def on_client_connection_close(self) -> None:
@@ -405,7 +407,7 @@ class CBorgProxyPlugin(ReverseProxyBasePlugin):
         pass
 
     def on_access_log(self, context: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        cborg_upstream_release(self.current_port)
+        #cborg_upstream_release(self.current_port)
         self.current_port = None
         return context
 
@@ -434,7 +436,7 @@ if __name__ == '__main__':
         '--num-workers', '3', 
         '--enable-reverse-proxy', 
         '--plugins', 'CBorgProxyPlugin', 
-        '--timeout', '120', 
+        '--timeout', '60', 
         '--port', '8001', 
         '--ports', '8002', '8003', 
         '--log-level', 'ERROR'
