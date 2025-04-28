@@ -2,8 +2,7 @@
 
   "requestOptions": {
       "headers": {
-          "X-CBorg-Continue-ConfigVersion": 0.1,
-          "Authorization": "Bearer ADD_YOUR_CBORG_API_KEY_HERE"
+          "X-CBorg-Continue-ConfigVersion": 0.3
       }
   },
 
@@ -16,39 +15,85 @@
       "model": "lbl/cborg-coder:latest",
       "contextLength": 131072,
       "apiBase": "https://api.cborg.lbl.gov",
+      "apiKey": "${CBORG_API_KEY}",
+      "useLegacyCompletionsEndpoint": false
+    },
+    {
+      "title": "LBL/CBorg Deepthought",
+      "provider": "openai",
+      "model": "lbl/cborg-deepthought:latest",
+      "contextLength": 131072,
+      "apiBase": "https://api.cborg.lbl.gov",
+      "apiKey": "${CBORG_API_KEY}",
       "useLegacyCompletionsEndpoint": false
     },
     {
       "title": "OpenAI/ChatGPT",
       "provider": "openai",
       "model": "openai/chatgpt:latest",
-      "contextLength": 131072,
-      "apiBase": "https://api.cborg.lbl.gov"
+      "contextLength": 1000000,
+      "apiBase": "https://api.cborg.lbl.gov",
+      "apiKey": "${CBORG_API_KEY}"
     },
     {
-      "title": "OpenAI/ChatGPT",
+      "title": "OpenAI/o*",
       "provider": "openai",
-      "model": "openai/chatgpt:latest",
-      "contextLength": 131072,
-      "apiBase": "http://127.0.0.1:8001",
-      "apiKey": "none"
+      "model": "openai/o:latest",
+      "contextLength": 200000,
+      "apiBase": "https://api.cborg.lbl.gov",
+      "apiKey": "${CBORG_API_KEY}"
     },
     {
       "title": "Anthropic/Claude",
       "provider": "openai",
       "model": "anthropic/claude:latest",
       "contextLength": 200000,
-      "apiBase": "https://api.cborg.lbl.gov"
+      "apiBase": "https://api.cborg.lbl.gov",
+      "apiKey": "${CBORG_API_KEY}"
     },
     {
       "title": "Google/Gemini",
       "provider": "openai",
       "model": "google/gemini:latest",
-      "contextLength": 200000,
-      "apiBase": "https://api.cborg.lbl.gov"
+      "contextLength": 1000000,
+      "apiBase": "https://api.cborg.lbl.gov",
+      "apiKey": "${CBORG_API_KEY}"
+    },
+    {
+      "title": "xAI/Grok",
+      "provider": "openai",
+      "model": "xAI/grok:latest",
+      "contextLength": 131072,
+      "apiBase": "https://api.cborg.lbl.gov",
+      "apiKey": "${CBORG_API_KEY}"
     }
   ],
-
+  "embeddingsProvider": {
+    "provider": "openai",
+    "model": "lbl/nomic-embed-text",
+    "apiBase": "https://api.cborg.lbl.gov",
+    "apiKey": "${CBORG_API_KEY}"
+  },
+  "tabAutocompleteModel": {
+    "title": "LBL/CBorg Coder Base",
+    "provider": "vllm",
+    "model": "lbl/cborg-coder-base:latest",
+    "apiBase": "https://api.cborg.lbl.gov",
+    "apiKey": "${CBORG_API_KEY}",
+    "contextLength": 8192,
+    "useLegacyCompletionsEndpoint": false,
+    "completionOptions": {
+      "temperature": 0.2,
+      "topP": 0.9,
+      "maxTokens": 1024
+    }
+  },
+  "tabAutocompleteOptions": {
+    "debounceDelay": 500,
+    "maxPromptTokens": 8192,
+    "cache": false,
+    "template": "<|fim_prefix|>{{{prefix}}}<|fim_suffix|>{{{suffix}}}<|fim_middle|>"
+  },
   "completionOptions": {
     "temperature": 0.0
   },
@@ -62,6 +107,11 @@
       "name": "test",
       "prompt": "{{{ input }}}\n\nWrite a comprehensive set of unit tests for the selected code. It should setup, run tests that check for correctness including important edge cases, and teardown. Ensure that the tests are complete and sophisticated. Give the tests just as chat output, don't edit any file.",
       "description": "Write unit tests for highlighted code"
+    },
+    {
+      "name": "document",
+      "prompt": "{{{ input }}}\n\nAdd proper documentation and comments to the selected code",
+      "description": "Add documentation for highlighted code"
     }
   ],
 

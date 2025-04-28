@@ -1,47 +1,40 @@
 # VS Code "Continue" Plugin Installation
 
-IMPORTANT: Read this Quickstart Guide: https://docs.continue.dev/quickstart
+Integration of CBorg with VS Code "Continue" will enable chat within VS code, in addithion to autocomplete and code indexing.
 
-## Option #1 - Easy Setup
-
-This will enable chat within VS code, but does not enable tab-autocomplete or code indexing.
+Instructions: 
 
 1. Install VS Code "Continue" Plugin
 
-2. Copy the file easy-setup-config.json to ~/.continue/config.json
+Quickstart Documentation: https://docs.continue.dev/quickstart
 
-```
-cp ./easy-setup-config.json ~/.continue/config.json
-```
+2. Clone this repo and change into the 'continue' subdirectory
 
-3. Edit the config.json and replace ADD_YOUR_CBORG_API_KEY_HERE with your API key:
+3. Run ./install-vscode-continue.sh
 
-```
-  "requestOptions": {
-      "headers": {
-          "X-CBorg-Continue-ConfigVersion": 0.1,
-          "Authorization": "Bearer ADD_YOUR_CBORG_API_KEY_HERE"
-      }
-  },
-```
+The install script will prompt you for the preferred installation method:
+
+- Simple: Easy to setup, but if your API key changes you'll need to run it again
+- Standard: Will configure Continue to get the API key from your CBORG_API_KEY environment variable. Recommended for most users.
+- Proxy: Will configure Continue to use the CBorg Client Proxy (proxy/cborgclient.py) for reduced latency in autocompletion while connected to LBL-net
+
+After selecting your method and confirming the prompts, you should be able to use the "Continue" plugin in VS Code.
 
 4. Start VS Code.
 
-   - Chat Models will be available in the side pane, and other editor functions
+## Using Chat
 
-## Option #2 - Advanced Setup
+Open the side panel and select "Continue" from the dropdown. You should see a chat window. You can type a prompt and press enter to send it to the server. You can also use the slash commands to generate code, comments, etc. You can also change the model by selecting the drop down next to the chat window.
 
-1. Install VS Code "Continue" Plugin
+## Using Autocomplete
 
-2. Run ./install-vscode-continue.sh 
-   This script will replace the default config.json with the managed version in this directory
+To verify functionality, create a new Python file and type "# Write a hello world program" and press enter. You should see suggested autocompletions (hit 'tab' to accept them)
 
-3. Install and start the CBorg Client-side Proxy (see /proxy directory)
+## Note about the CBorg Client Proxy
 
-4. Start VS Code.
+The "Client Proxy" (proxy/cborgclient.py) is no longer recommended, but is still available. Using the proxy can reduce latency in autocompletion while connected to LBL-net.
 
-   - Chat Models will be available in the side pane, and other editor functions
-   - Code generation/editing model will correspond to whatever model is selected in the chat side pane
-   - Tab-style Autocompletion also works (may take around 1-2 seconds to generate)
-   - Full codebase can be indexed and retrieved using embedding model to enhance autocompletion
-   - To debug LLM prompting, open Console, select "Continue - LLM Prompt/Completion"
+## How to Debug VS Code "Continue" Plugin
+
+Open the VS Code Console, select "Continue - LLM Prompt/Completion". It will show you the actual contents of prompts being transmitted to the server.
+

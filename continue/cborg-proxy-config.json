@@ -1,93 +1,107 @@
 {
-
-  "allowAnonymousTelemetry": false,
-
   "models": [
     {
       "title": "LBL/CBorg Coder",
       "provider": "openai",
       "model": "lbl/cborg-coder:latest",
       "contextLength": 131072,
+      "apiBase": "http://127.0.0.1:8001", 
+      "apiKey": "n/a",
+      "useLegacyCompletionsEndpoint": false
+    },
+    {
+      "title": "LBL/CBorg Deepthought",
+      "provider": "openai",
+      "model": "lbl/cborg-deepthought:latest",
+      "contextLength": 131072,
       "apiBase": "http://127.0.0.1:8001",
-      "apiKey": "none",
+      "apiKey": "n/a",
       "useLegacyCompletionsEndpoint": false
     },
     {
       "title": "OpenAI/ChatGPT",
       "provider": "openai",
       "model": "openai/chatgpt:latest",
-      "contextLength": 131072,
+      "contextLength": 1000000,
       "apiBase": "http://127.0.0.1:8001",
-      "apiKey": "none"
+      "apiKey": "n/a"
     },
     {
-      "title": "OpenAI/o1",
+      "title": "OpenAI/o*",
       "provider": "openai",
-      "model": "openai/o1",
-      "contextLength": 131072,
+      "model": "openai/o:latest",
+      "contextLength": 200000,
       "apiBase": "http://127.0.0.1:8001",
-      "apiKey": "none"
+      "apiKey": "n/a"
     },
     {
       "title": "Anthropic/Claude",
       "provider": "openai",
       "model": "anthropic/claude:latest",
-      "contextLength": 131072,
+      "contextLength": 200000,
       "apiBase": "http://127.0.0.1:8001",
-      "apiKey": "none"
+      "apiKey": "n/a"
     },
     {
       "title": "Google/Gemini",
       "provider": "openai",
       "model": "google/gemini:latest",
-      "contextLength": 131072,
+      "contextLength": 1000000,
       "apiBase": "http://127.0.0.1:8001",
       "apiKey": "none"
+    },
+    {
+      "title": "xAI Grok",
+      "provider": "openai",
+      "model": "xai/grok:latest",
+      "contextLength": 131072,
+      "apiBase": "http://127.0.0.1:8001",
+      "apiKey": "n/a"
     }
   ],
-
   "requestOptions": {
     "headers": {
-      "X-CBorg-Continue-ConfigVersion": 0.2
+      "X-CBorg-Continue-ConfigVersion": 0.3
     }
   },
-
-  "completionOptions": {
-    "temperature": 0.0
+  "embeddingsProvider": {
+    "provider": "openai",
+    "model": "lbl/nomic-embed-text",
+    "apiBase": "http://127.0.0.1:8002",
+    "apiKey": "n/a"
   },
-
+  "tabAutocompleteModel": {
+    "title": "LBL/CBorg Coder Base",
+    "provider": "vllm",
+    "model": "lbl/cborg-coder-base:latest",
+    "apiBase": "http://127.0.0.1:8003",
+    "contextLength": 8192,
+    "apiKey": "n/a",
+    "useLegacyCompletionsEndpoint": false,
+    "completionOptions": {
+      "temperature": 0.2,
+      "topP": 0.9,
+      "maxTokens": 1024
+    }
+  },
+  "tabAutocompleteOptions": {
+    "debounceDelay": 150,
+    "maxPromptTokens": 8192,
+    "cache": true,
+    "template": "<|fim_prefix|>{{{prefix}}}<|fim_suffix|>{{{suffix}}}<|fim_middle|>"
+  },
   "customCommands": [
     {
       "name": "test",
       "prompt": "{{{ input }}}\n\nWrite a comprehensive set of unit tests for the selected code. It should setup, run tests that check for correctness including important edge cases, and teardown. Ensure that the tests are complete and sophisticated. Give the tests just as chat output, don't edit any file.",
       "description": "Write unit tests for highlighted code"
+    },
+    {
+      "name": "document",
+      "prompt": "{{{ input }}}\n\nAdd proper documentation and comments to the selected code",
+      "description": "Add documentation for highlighted code"
     }
   ],
-
-  "embeddingsProvider": {
-    "provider": "openai",
-    "model": "lbl/nomic-embed-text",
-    "apiBase": "http://127.0.0.1:8002",
-    "apiKey": "none"
-  },
-
-  "tabAutocompleteModel": {
-    "title": "LBL/CBorg Coder Base",
-    "provider": "openai",
-    "model": "lbl/cborg-coder-base:latest",
-    "apiBase": "http://127.0.0.1:8003",
-    "contextLength": 8192,
-    "apiKey": "none"
-  },
-
-  "tabAutocompleteOptions": {
-    "debounceDelay": 250,
-    "multilineCompletions": "auto",
-    "disableInFiles": ["*.csv", "*.txt", "*.md"],
-    "maxPromptTokens": 8192,
-    "useCache": true
-  },
-
   "contextProviders": [
     {
       "name": "code",
