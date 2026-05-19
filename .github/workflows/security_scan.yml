@@ -1,222 +1,119 @@
-# GitLab CI Security Scan Pipeline Template
-#
-# This template runs the same four security scanners as the GitHub Actions
-# workflow (.github/workflows/security_scan.yml) and uploads results to
-# SecObserve.  It is designed to be included from a central repository:
-#
-#   # .gitlab-ci.yml in each target project
-#   include:
-#     - project: '<group>/security-pipelines'
-#       ref: main
-#       file: '/templates/security_scan.yml'
-#
-# Required CI/CD variables (set at the group or project level):
-#   SO_API_BASE_URL  — Base URL of the SecObserve backend
-#   SO_API_TOKEN     — API token for SecObserve (masked)
-#
-# Optional CI/CD variables:
-#   (None currently used by the core pipeline)
-#
-# Runner requirements:
-#   - Kubernetes executor (tagged 'k8s-bk')
-#   - No Docker daemon or privileged mode required
-variables:
-  PIPELINE_VERSION: "1.6.9"
-  # Pin Docker images by digest for reproducibility (same digests as GitHub workflow).
+name: Security Scan and SecObserve Upload
+
+permissions:
+  contents: read
+  security-events: write
+on:
+  push:
+    branches: [ "main", "dev", "sec" ]
+  workflow_dispatch:
+    inputs:
+      fetch_depth:
+        description: 'Number of commits to fetch (0 for all history)'
+        required: false
+        default: '1'
+        type: string
+
+env:
+  WORKFLOW_VERSION: "1.4.0"
+  # Pin Docker images by digest for reproducibility (avoid floating monthly tags).
   # secobserve-scanners:2026_04 amd64 digest:
-  SO_SCANNERS_IMAGE: "ghcr.io/secobserve/secobserve-scanners@sha256:c142c4bac337fefebc991b5b9b43b26b371ed44672c0f5291f819faa1902f9e7"
+  SO_SCANNERS_IMAGE: 'ghcr.io/secobserve/secobserve-scanners@sha256:c142c4bac337fefebc991b5b9b43b26b371ed44672c0f5291f819faa1902f9e7'
   # osv-scanner v2.3.8 amd64 digest:
-  OSV_SCANNER_IMAGE: "ghcr.io/google/osv-scanner@sha256:904f48030672996473eda96b9193a090c0b2096b0d45b63e51b19b34533b7171"
-stages:
-  - scan
-  - gate
+  OSV_SCANNER_IMAGE: 'ghcr.io/google/osv-scanner@sha256:904f48030672996473eda96b9193a090c0b2096b0d45b63e51b19b34533b7171'
 
-# ---------------------------------------------------------------------------
-# Base settings shared by security jobs (avoids polluting global default)
-# ---------------------------------------------------------------------------
-.security-base:
-  tags:
-    - k8s-bk
-  # Keep resource footprint small to fit within Kubernetes namespace quotas.
-  # These can be overridden per-job or via project-level CI/CD variables.
-  variables:
-    KUBERNETES_MEMORY_REQUEST: "256Mi"
-    KUBERNETES_MEMORY_LIMIT: "512Mi"
-    KUBERNETES_CPU_REQUEST: "200m"
-    KUBERNETES_CPU_LIMIT: "1"
-    # Limit helper container resources as well to reduce total pod memory footprint
-    KUBERNETES_HELPER_MEMORY_REQUEST: "128Mi"
-    KUBERNETES_HELPER_MEMORY_LIMIT: "256Mi"
-    KUBERNETES_HELPER_CPU_REQUEST: "50m"
-    KUBERNETES_HELPER_CPU_LIMIT: "500m"
+jobs:
+  security_scan:
+    runs-on: arc-runner-set
 
-# ---------------------------------------------------------------------------
-# Workflow rules — only run on pushes to main, dev, sec branches
-# ---------------------------------------------------------------------------
-workflow:
-  rules:
-    - if: '($CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api") && ($CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_BRANCH == "sec")'
+    steps:
+      # Pin actions to a specific commit SHA for immutability
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: ${{ inputs.fetch_depth || 1 }}
 
+      # 1. Run Gitleaks (local action pins secobserve-scanners image by digest)
+      - name: Run Gitleaks
+        uses: ./.github/actions/gitleaks
+        with:
+          report_name: 'gitleaks.sarif'
+          so_api_base_url: ${{ vars.SO_API_BASE_URL }}
+          so_api_token: ${{ secrets.SO_API_TOKEN }}
+          so_product_name: ${{ github.event.repository.name }}
+          so_branch_name: ${{ github.ref_name }}
+          so_origin_service: git-scan
+          so_origin_docker_image_name_tag: ${{ github.sha }}
 
-# ---------------------------------------------------------------------------
-# 1. Gitleaks — secret detection
-#
-# Runs the SecObserve Gitleaks entrypoint directly inside the scanner
-# container.  The entrypoint writes the SARIF report and uploads it to
-# SecObserve.
-# ---------------------------------------------------------------------------
-gitleaks:
-  extends: .security-base
-  stage: scan
-  image: ${SO_SCANNERS_IMAGE}
-  variables:
-    REPORT_NAME: "gitleaks.sarif"
-    RUN_DIRECTORY: "."
-    SO_UPLOAD: "true"
-    SO_PRODUCT_NAME: "${CI_PROJECT_NAME}"
-    SO_BRANCH_NAME: "${CI_COMMIT_REF_NAME}"
-    SO_ORIGIN_SERVICE: "git-scan"
-    SO_ORIGIN_DOCKER_IMAGE_NAME_TAG: "${CI_COMMIT_SHA}"
-  script:
-    - /entrypoints/entrypoint_gitleaks.sh
-  artifacts:
-    paths:
-      - gitleaks.sarif
-    when: always
-    expire_in: 30 days
-  allow_failure: true
+      # 2. Run Trivy (local action pins secobserve-scanners image by digest)
+      - name: Run Trivy Filesystem
+        uses: ./.github/actions/trivy_filesystem
+        with:
+          target: '.'
+          report_name: 'trivy.json'
+          so_api_base_url: ${{ vars.SO_API_BASE_URL }}
+          so_api_token: ${{ secrets.SO_API_TOKEN }}
+          so_product_name: ${{ github.event.repository.name }}
+          so_branch_name: ${{ github.ref_name }}
+          so_origin_service: git-scan
+          so_origin_docker_image_name_tag: ${{ github.sha }}
 
-# ---------------------------------------------------------------------------
-# 2. Trivy — SCA / filesystem vulnerability scanning
-# ---------------------------------------------------------------------------
-trivy:
-  extends: .security-base
-  stage: scan
-  image: ${SO_SCANNERS_IMAGE}
-  needs:
-    - job: gitleaks
-      optional: true
-  variables:
-    TARGET: "."
-    REPORT_NAME: "trivy.json"
-    RUN_DIRECTORY: "."
-    SO_UPLOAD: "true"
-    SO_SUPPRESS_LICENSES: "true"
-    SO_PRODUCT_NAME: "${CI_PROJECT_NAME}"
-    SO_BRANCH_NAME: "${CI_COMMIT_REF_NAME}"
-    SO_ORIGIN_SERVICE: "git-scan"
-    SO_ORIGIN_DOCKER_IMAGE_NAME_TAG: "${CI_COMMIT_SHA}"
-  script:
-    - /entrypoints/entrypoint_trivy_filesystem.sh
-  artifacts:
-    paths:
-      - trivy.json
-    when: always
-    expire_in: 30 days
-  allow_failure: true
+      # 3. Run OSV-Scanner (pinned by image digest for total immutability)
+      - name: Generate OSV-Scanner Report
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/src ${{ env.OSV_SCANNER_IMAGE }} \
+            scan \
+            --format sarif \
+            --recursive \
+            /src > osv_scanner.sarif || true
+          # OSV-Scanner writes nothing to stdout when no vulnerabilities are found,
+          # which leaves an empty file that SecObserve rejects. Write a minimal
+          # valid SARIF envelope so the importer can process it.
+          if [ ! -s osv_scanner.sarif ]; then
+            echo '{"version":"2.1.0","$schema":"https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json","runs":[{"tool":{"driver":{"name":"osv-scanner","informationUri":"https://github.com/google/osv-scanner","rules":[]}},"results":[]}]}' > osv_scanner.sarif
+          fi
 
-# ---------------------------------------------------------------------------
-# 3a. OSV-Scanner — open-source vulnerability detection (scan phase)
-#
-# Runs the OSV-Scanner in its own container image and writes SARIF output.
-# The report is passed as an artifact to the upload phase.
-# ---------------------------------------------------------------------------
-osv-scan:
-  extends: .security-base
-  stage: scan
-  image: ${OSV_SCANNER_IMAGE}
-  needs:
-    - job: trivy
-      optional: true
-  script:
-    - /osv-scanner scan --format sarif --recursive . > osv_scanner.sarif || true
-    # OSV-Scanner writes nothing to stdout when no vulnerabilities are found,
-    # which leaves an empty file that SecObserve rejects.  Write a minimal
-    # valid SARIF envelope so the importer can process it.
-    - |
-      if [ ! -s osv_scanner.sarif ]; then
-        echo '{"version":"2.1.0","$schema":"https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json","runs":[{"tool":{"driver":{"name":"osv-scanner","informationUri":"https://github.com/google/osv-scanner","rules":[]}},"results":[]}]}' > osv_scanner.sarif
-      fi
-  artifacts:
-    paths:
-      - osv_scanner.sarif
-    when: always
-    expire_in: 30 days
-  allow_failure: true
+      - name: Upload OSV-Scanner to SecObserve
+        uses: ./.github/actions/importer
+        with:
+          so_file_name: 'osv_scanner.sarif'
+          so_parser_name: 'SARIF'
+          so_api_base_url: ${{ vars.SO_API_BASE_URL }}
+          so_api_token: ${{ secrets.SO_API_TOKEN }}
+          so_product_name: ${{ github.event.repository.name }}
+          so_branch_name: ${{ github.ref_name }}
+          so_origin_service: git-scan
+          so_origin_docker_image_name_tag: ${{ github.sha }}
 
-# ---------------------------------------------------------------------------
-# 3b. OSV-Scanner — upload results to SecObserve
-#
-# Consumes the SARIF artifact from osv-scan and uploads it via the
-# SecObserve importer entrypoint.
-# ---------------------------------------------------------------------------
-osv-upload:
-  extends: .security-base
-  stage: scan
-  image: ${SO_SCANNERS_IMAGE}
-  needs:
-    - job: osv-scan
-      artifacts: true
-  variables:
-    SO_UPLOAD: "true"
-    SO_FILE_NAME: "osv_scanner.sarif"
-    SO_PARSER_NAME: "SARIF"
-    SO_PRODUCT_NAME: "${CI_PROJECT_NAME}"
-    SO_BRANCH_NAME: "${CI_COMMIT_REF_NAME}"
-    SO_ORIGIN_SERVICE: "git-scan"
-    SO_ORIGIN_DOCKER_IMAGE_NAME_TAG: "${CI_COMMIT_SHA}"
-  script:
-    - file_upload_observations.sh
-  allow_failure: true
+      # 4. Run Semgrep (local action pins secobserve-scanners image by digest)
+      - name: Run Semgrep
+        uses: ./.github/actions/semgrep
+        with:
+          target: '.'
+          configuration: 'p/default'
+          report_name: 'semgrep.json'
+          so_api_base_url: ${{ vars.SO_API_BASE_URL }}
+          so_api_token: ${{ secrets.SO_API_TOKEN }}
+          so_product_name: ${{ github.event.repository.name }}
+          so_branch_name: ${{ github.ref_name }}
+          so_origin_service: git-scan
+          so_origin_docker_image_name_tag: ${{ github.sha }}
 
-# ---------------------------------------------------------------------------
-# 4. Semgrep — SAST
-# ---------------------------------------------------------------------------
-semgrep:
-  extends: .security-base
-  stage: scan
-  image: ${SO_SCANNERS_IMAGE}
-  needs:
-    - job: osv-upload
-      optional: true
-  variables:
-    TARGET: "."
-    CONFIGURATION: "p/default"
-    REPORT_NAME: "semgrep.json"
-    RUN_DIRECTORY: "."
-    SO_UPLOAD: "true"
-    SO_PRODUCT_NAME: "${CI_PROJECT_NAME}"
-    SO_BRANCH_NAME: "${CI_COMMIT_REF_NAME}"
-    SO_ORIGIN_SERVICE: "git-scan"
-    SO_ORIGIN_DOCKER_IMAGE_NAME_TAG: "${CI_COMMIT_SHA}"
-  script:
-    - /entrypoints/entrypoint_semgrep.sh
-  artifacts:
-    paths:
-      - semgrep.json
-    when: always
-    expire_in: 30 days
-  allow_failure: true
+      # 5. Check SecObserve security gate (local action pins secobserve-scanners image by digest)
+      - name: Check Security Gate
+        uses: ./.github/actions/check_security_gate
+        with:
+          so_api_base_url: ${{ vars.SO_API_BASE_URL }}
+          so_api_token: ${{ secrets.SO_API_TOKEN }}
+          so_product_name: ${{ github.event.repository.name }}
 
-# ---------------------------------------------------------------------------
-# 5. Security Gate — fails the pipeline if SecObserve gate is not passed
-# ---------------------------------------------------------------------------
-security-gate:
-  extends: .security-base
-  stage: gate
-  image: ${SO_SCANNERS_IMAGE}
-  variables:
-    SO_PRODUCT_NAME: "${CI_PROJECT_NAME}"
-  script:
-    - check_security_gate.sh
-  needs:
-    - job: gitleaks
-      optional: true
-    - job: trivy
-      optional: true
-    - job: osv-scan
-      optional: true
-    - job: osv-upload
-      optional: true
-    - job: semgrep
-      optional: true
+      # 6. Upload Artifacts (filenames contain the commit SHA for traceability)
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: security-reports-${{ github.sha }}
+          path: |
+            gitleaks.sarif
+            trivy.json
+            osv_scanner.sarif
+            semgrep.json
