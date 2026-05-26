@@ -46,7 +46,18 @@ inputs:
 runs:
   using: 'docker'
   image: 'docker://ghcr.io/secobserve/secobserve-scanners@sha256:c142c4bac337fefebc991b5b9b43b26b371ed44672c0f5291f819faa1902f9e7'
-  entrypoint: '/entrypoints/entrypoint_gitleaks.sh'
+  entrypoint: '/bin/sh'
+  args:
+    - '-c'
+    - |
+      git config --global --add safe.directory /github/workspace || true
+      if [ -n "$RUN_DIRECTORY" ]; then cd "$RUN_DIRECTORY"; fi
+      gitleaks detect --source . --report-format sarif --report-path "$REPORT_NAME" $FURTHER_PARAMETERS || true
+      export SO_FILE_NAME="$REPORT_NAME"
+      export SO_PARSER_NAME="SARIF"
+      if [ "$SO_UPLOAD" = "true" ]; then
+        file_upload_observations.sh
+      fi
   env:
     REPORT_NAME: ${{ inputs.report_name }}
     RUN_DIRECTORY: ${{ inputs.run_directory }}

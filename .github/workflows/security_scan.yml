@@ -15,7 +15,7 @@ on:
         type: string
 
 env:
-  WORKFLOW_VERSION: "1.4.0"
+  WORKFLOW_VERSION: "1.6.1"
   # Pin Docker images by digest for reproducibility (avoid floating monthly tags).
   # secobserve-scanners:2026_04 amd64 digest:
   SO_SCANNERS_IMAGE: 'ghcr.io/secobserve/secobserve-scanners@sha256:c142c4bac337fefebc991b5b9b43b26b371ed44672c0f5291f819faa1902f9e7'
@@ -38,6 +38,7 @@ jobs:
         uses: ./.github/actions/gitleaks
         with:
           report_name: 'gitleaks.sarif'
+          further_parameters: '--redact=80'
           so_api_base_url: ${{ vars.SO_API_BASE_URL }}
           so_api_token: ${{ secrets.SO_API_TOKEN }}
           so_product_name: ${{ github.event.repository.name }}
