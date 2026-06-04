@@ -7,3 +7,4 @@ app/venv
 proxy/venv
 **/zoo-code*.json
 **/roo-code*.json
+**/mcp_settings.json

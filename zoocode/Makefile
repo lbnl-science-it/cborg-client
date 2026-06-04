@@ -1,14 +1,15 @@
 SHELL := /bin/bash
 DIR   := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
-OUT   := $(DIR)zoo-code-settings.json
+OUT     := $(DIR)zoo-code-settings.json
+MCP_OUT := $(DIR)mcp_settings.json
 
-.PHONY: all clean $(OUT)
+.PHONY: all clean $(OUT) $(MCP_OUT)
 
 # Build zoo-code-settings.json by merging provider configs into base.json.
 # Providers are included only when their API key env var is set:
 #   CBORG_API_KEY    -> providers/cborg.json  (CBorg / LBL)  [required]
 #   AMSC_I2_API_KEY  -> providers/amsc.json   (AmSC / American Science Cloud)  [optional]
-all: $(OUT)
+all: $(OUT) $(MCP_OUT)
 
 $(OUT):
 	@echo "Building $(OUT)..."
@@ -100,18 +101,43 @@ $(OUT):
 		'.providerProfiles.apiConfigs = $$configs | .globalSettings.codebaseIndexConfig.codebaseIndexEnabled = $$idx | .globalSettings.lastSettingsExportPath |= sub("^~"; $$home)' \
 		$(DIR)base.json > $(OUT)
 	@echo "Done -> $(OUT)"
+
+$(MCP_OUT):
+	@echo "Building $(MCP_OUT)..."
+	@if [ -z "$$CBORG_API_KEY" ]; then \
+		echo ""; \
+		echo "ERROR: CBORG_API_KEY is not set. Export your CBorg API key and try again:"; \
+		echo "  export CBORG_API_KEY=<your-key>"; \
+		echo ""; \
+		exit 1; \
+	fi; \
+	CBORG_API_KEY="$$CBORG_API_KEY" envsubst '$$CBORG_API_KEY' < $(DIR)mcp.json > $(MCP_OUT)
+	@echo "Done -> $(MCP_OUT)"
 	@echo ""
 	@echo "================================================================================"
-	@echo " SUCCESS: $(OUT) has been built."
+	@echo " SUCCESS: Settings files have been built."
 	@echo "================================================================================"
 	@echo ""
-	@echo " Usage:"
+	@echo " !! WARNING: These files contain your CBorg API key. Do not share or commit them."
 	@echo ""
-	@echo "   1. Open Zoo Code Settings (VS Code > Zoo Code > Settings)"
-	@echo "   2. Scroll to 'About Zoo Code' and click 'Manage Settings'"
-	@echo "   3. Click 'Reset' to clear existing profiles (recommended)"
-	@echo "   4. Click 'Import' and select this file:"
+	@echo " Step 1 -- Import Zoo Code provider settings:"
+	@echo ""
+	@echo "   a. Open Zoo Code Settings (VS Code > Zoo Code > Settings)"
+	@echo "   b. Scroll to 'About Zoo Code' and click 'Manage Settings'"
+	@echo "   c. Click 'Reset' to clear existing profiles, then restart Zoo Code."
+	@echo "   d. After restarting, return to 'Manage Settings', click 'Import',"
+	@echo "      and select:"
 	@echo "      $(OUT)"
+	@echo ""
+	@echo " Step 2 -- Install MCP server settings:"
+	@echo ""
+	@echo "   a. Open Zoo Code Settings (VS Code > Zoo Code > Settings)"
+	@echo "   b. Under 'MCP Servers', click the icon to open the global MCP settings file"
+	@echo "   c. Replace the file contents with the contents of:"
+	@echo "      $(MCP_OUT)"
+	@echo ""
+	@echo "   Note: MCP servers are disabled by default. Enable individual servers"
+	@echo "   in the Zoo Code MCP settings panel when you want to use them."
 	@echo ""
 	@echo " Codebase indexing (if enabled above):"
 	@echo ""
@@ -125,5 +151,5 @@ $(OUT):
 	@echo "================================================================================"
 
 clean:
-	@rm -f $(OUT)
-	@echo "Removed $(OUT)"
+	@rm -f $(OUT) $(MCP_OUT)
+	@echo "Removed $(OUT) $(MCP_OUT)"

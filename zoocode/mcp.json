@@ -1,0 +1,26 @@
+{
+	"mcpServers": {
+		"context7": {
+			"type": "streamable-http",
+			"url": "https://api.cborg.lbl.gov/mcp/context7",
+			"headers": {
+				"Authorization": "Bearer $CBORG_API_KEY"
+			},
+			"alwaysAllow": [
+				"*"
+			],
+			"disabled": true
+		},
+		"valency": {
+			"type": "streamable-http",
+			"url": "https://api.cborg.lbl.gov/mcp/valency",
+			"headers": {
+				"Authorization": "Bearer $CBORG_API_KEY"
+			},
+			"alwaysAllow": [
+				"*"
+			],
+			"disabled": true
+		}
+	}
+}
