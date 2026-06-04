@@ -4,4 +4,6 @@ app/__pycache__
 app/build
 app/dist
 app/venv
-
+proxy/venv
+**/zoo-code*.json
+**/roo-code*.json

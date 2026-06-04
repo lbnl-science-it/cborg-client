@@ -1,0 +1,62 @@
+{
+  "GCP - Gemini Pro High": {
+    "todoListEnabled": true,
+    "rateLimitSeconds": 0,
+    "consecutiveMistakeLimit": 3,
+    "enableReasoningEffort": true,
+    "reasoningEffort": "high",
+    "apiModelId": "gemini-pro-latest",
+    "vertexKeyFile": "",
+    "vertexJsonCredentials": "$GCP_JSON_CREDENTIALS",
+    "vertexProjectId": "$GCP_PROJECT_ID",
+    "vertexRegion": "$GCP_REGION",
+    "vertex1MContext": true,
+    "apiProvider": "vertex",
+    "id": "gcp-gemini-pro-high"
+  },
+  "GCP - Gemini Pro": {
+    "todoListEnabled": true,
+    "rateLimitSeconds": 0,
+    "consecutiveMistakeLimit": 3,
+    "enableReasoningEffort": true,
+    "reasoningEffort": "low",
+    "apiModelId": "gemini-pro-latest",
+    "vertexKeyFile": "",
+    "vertexJsonCredentials": "$GCP_JSON_CREDENTIALS",
+    "vertexProjectId": "$GCP_PROJECT_ID",
+    "vertexRegion": "$GCP_REGION",
+    "vertex1MContext": true,
+    "apiProvider": "vertex",
+    "id": "gcp-gemini-pro-high"
+  },
+  "GCP - Gemini Flash High": {
+    "todoListEnabled": true,
+    "rateLimitSeconds": 0,
+    "consecutiveMistakeLimit": 3,
+    "enableReasoningEffort": true,
+    "reasoningEffort": "high",
+    "apiModelId": "gemini-flash-latest",
+    "vertexKeyFile": "",
+    "vertexJsonCredentials": "$GCP_JSON_CREDENTIALS",
+    "vertexProjectId": "$GCP_PROJECT_ID",
+    "vertexRegion": "$GCP_REGION",
+    "vertex1MContext": true,
+    "apiProvider": "vertex",
+    "id": "gcp-gemini-flash-high"
+  },
+  "GCP - Gemini Flash": {
+    "todoListEnabled": true,
+    "rateLimitSeconds": 0,
+    "consecutiveMistakeLimit": 3,
+    "enableReasoningEffort": true,
+    "reasoningEffort": "low",
+    "apiModelId": "gemini-flash-latest",
+    "vertexKeyFile": "",
+    "vertexJsonCredentials": "$GCP_JSON_CREDENTIALS",
+    "vertexProjectId": "$GCP_PROJECT_ID",
+    "vertexRegion": "$GCP_REGION",
+    "vertex1MContext": true,
+    "apiProvider": "vertex",
+    "id": "gcp-gemini-flash"
+  }
+}

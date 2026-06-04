@@ -2,7 +2,7 @@
 
   "requestOptions": {
       "headers": {
-          "X-CBorg-Continue-ConfigVersion": 0.3
+          "X-CBorg-Continue-ConfigVersion": 0.4
       }
   },
 
@@ -12,41 +12,24 @@
     {
       "title": "LBL/CBorg Coder",
       "provider": "openai",
-      "model": "lbl/cborg-coder:latest",
+      "model": "lbl/cborg-coder",
       "contextLength": 131072,
       "apiBase": "https://api.cborg.lbl.gov",
       "apiKey": "${CBORG_API_KEY}",
       "useLegacyCompletionsEndpoint": false
     },
     {
-      "title": "LBL/CBorg Deepthought",
+      "title": "OpenAI/GPT 5 Codex",
       "provider": "openai",
-      "model": "lbl/cborg-deepthought:latest",
+      "model": "gpt-5-codex",
       "contextLength": 131072,
-      "apiBase": "https://api.cborg.lbl.gov",
-      "apiKey": "${CBORG_API_KEY}",
-      "useLegacyCompletionsEndpoint": false
-    },
-    {
-      "title": "OpenAI/ChatGPT",
-      "provider": "openai",
-      "model": "openai/chatgpt:latest",
-      "contextLength": 1000000,
-      "apiBase": "https://api.cborg.lbl.gov",
-      "apiKey": "${CBORG_API_KEY}"
-    },
-    {
-      "title": "OpenAI/o*",
-      "provider": "openai",
-      "model": "openai/o:latest",
-      "contextLength": 200000,
       "apiBase": "https://api.cborg.lbl.gov",
       "apiKey": "${CBORG_API_KEY}"
     },
     {
       "title": "Anthropic/Claude",
       "provider": "openai",
-      "model": "anthropic/claude:latest",
+      "model": "anthropic/claude-sonnet",
       "contextLength": 200000,
       "apiBase": "https://api.cborg.lbl.gov",
       "apiKey": "${CBORG_API_KEY}"
@@ -54,7 +37,7 @@
     {
       "title": "Google/Gemini",
       "provider": "openai",
-      "model": "google/gemini:latest",
+      "model": "google/gemini-pro-high",
       "contextLength": 1000000,
       "apiBase": "https://api.cborg.lbl.gov",
       "apiKey": "${CBORG_API_KEY}"
@@ -76,30 +59,24 @@
   },
   "tabAutocompleteModel": {
     "title": "LBL/CBorg Coder Base",
-    "provider": "vllm",
-    "model": "lbl/cborg-coder-base:latest",
+    "provider": "openai",
+    "model": "lbl/cborg-coder-base",
     "apiBase": "https://api.cborg.lbl.gov",
     "apiKey": "${CBORG_API_KEY}",
     "contextLength": 8192,
-    "useLegacyCompletionsEndpoint": false,
-    "completionOptions": {
-      "temperature": 0.2,
-      "topP": 0.9,
-      "maxTokens": 1024
-    }
+    "useLegacyCompletionsEndpoint": false
   },
   "tabAutocompleteOptions": {
-    "debounceDelay": 500,
+    "debounceDelay": 200,
     "maxPromptTokens": 8192,
-    "cache": false,
-    "template": "<|fim_prefix|>{{{prefix}}}<|fim_suffix|>{{{suffix}}}<|fim_middle|>"
+    "cache": false
   },
   "completionOptions": {
     "temperature": 0.0
   },
 
   "tabAutocompleteOptions": {
-    "disable": true
+    "disable": false
   },
 
   "customCommands": [

@@ -2,25 +2,36 @@
 
 Client-side utilities for CBorg API Services
 
-## VS Code Continue Configuration
-
-`/continue`
-
-Provides a config.json for the Continue plugin, and installer script pre-configured to use CBorg models.
-
-Run `./continue/install-vscode-continue.sh` to start the installation. The script provides three methods of installation: Manual, Standard (Recommended), and Proxy (Advanced).
-
 **Contents:**
 
+- /zoocode: Configuration and setup for ZooCode (formerly RooCode) with CBorg models
+- /app: Mac OSX Menu-bar App for Client-side proxy (in development - not working yet)
 - /proxy: Client-side reverse proxy
 - /continue: Managed config.json file for VS Code Continue Plugin
-- /app: Mac OSX Menu-bar App for Client-side proxy (in development - not working yet)
+
+## Zoo Code Configuration
+
+`/zoocode`
+
+Provides a `Makefile`-based setup for [ZooCode](https://github.com/zoocode) (a VS Code fork)
+pre-configured to use CBorg models. Run `make` inside the `zoocode/` directory to generate a
+`zoo-code-settings.json` file that can be imported into Zoo Code.
+
+Optional providers (AmSC, GCP/Vertex AI) are included automatically when credentials are
+detected. Codebase indexing via Qdrant is available for advanced users with Docker or Podman
+installed.
+
+See [`zoocode/README.md`](zoocode/README.md) for full setup instructions.
 
 ## cborgproxy.py: Client-side Reverse Proxy Service
 
 This reverse proxy service can simplify application deployment and reduce latency of CBorg API calls while connected to VPN or LBL-net. 
 
 This is for advanced users and is experimental. 
+
+> **Note:** This app has not been tested recently and is likely not needed for most applications
+> today. The CBorg API can be accessed directly using your API key without a local proxy.
+
 
 ### How it works:
 
@@ -64,4 +75,17 @@ The proxy service on port 8001 will automatically inject your API keys, therefor
 
 Use port 8001 for chat completions. Use port 8002 for embeddings, and port 8003 for code completion (fill-in-the-middle). This will enable the different types of requests to execute in parallel.
 
+## VS Code Continue Configuration File
 
+> **Note:** The Continue integration has not been tested recently and the instructions below are
+> unlikely to work as written. Proceed with caution.
+
+`/continue/config.json`
+
+Provides a config.json for the Continue plugin, and installer script pre-configured to use CBorg models via the client-side proxy.
+
+Run `./continue/install-vscode-continue.sh` to install the provided config.json file. It will create a symlink from `~/.continue/config.json` to the managed file.
+
+## Menu-bar App
+
+This is still under development.

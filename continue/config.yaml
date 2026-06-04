@@ -1,0 +1,84 @@
+%YAML 1.1
+---
+name: CBorg-Continue-LBLNet
+version: 0.0.1
+schema: v1
+
+model_defaults: &model_defaults
+  provider: openai
+  apiKey: ${{ secrets.CBORG_API_KEY }}
+  apiBase: https://api-local.cborg.lbl.gov/v1
+  contextLength: 131072
+
+models:
+  - name: "LBL/CBorg Coder"
+    model: "lbl/cborg-coder:latest"
+    provider: ollama
+    apiKey: ${{ secrets.CBORG_API_KEY }}
+    apiBase: https://api-local.cborg.lbl.gov/v1
+    contextLength: 131072
+    env:
+      useLegacyCompletionsEndpoint: false
+    capabilities:
+      - tool_use
+      - image_input
+    roles:
+      - chat
+      - edit
+      - apply
+
+  - name: "OpenAI/ChatGPT"
+    <<: *model_defaults
+    model: "openai/chatgpt:latest"
+
+  - name: "OpenAI/o*"
+    <<: *model_defaults
+    model: "openai/o:latest"
+
+  - name: "Anthropic/Claude"
+    <<: *model_defaults
+    model: "anthropic/claude:latest"
+
+  - name: "xAI/Grok"
+    <<: *model_defaults
+    model: "xai/grok:latest"
+
+  - name: "LBL/Nomic Embed Text"
+    <<: *model_defaults
+    model: "lbl/nomic-embed-text"
+    roles:
+      - embed
+
+  - name: "LBL/CBorg Coder Base"
+    <<: *model_defaults
+    model: "lbl/cborg-coder:latest"
+    env:
+      useLegacyCompletionsEndpoint: false
+    roles:
+      - autocomplete
+    defaultCompletionOptions:
+      temperature: 0.2
+
+prompts:
+  - name: check
+    description: Check for mistakes in my code
+    prompt: |
+      Please read the highlighted code and check for any mistakes. You should look for the following, and be extremely vigilant:
+        - Syntax errors
+        - Logic errors
+        - Security vulnerabilities
+  - name: document
+    description: Add documentation to my code
+    prompt: |
+      Please read the highlighted code and add proper documentation and comments.
+
+context:
+  - provider: diff
+  - provider: file
+  - provider: codebase
+  - provider: code
+  - provider: docs
+    params:
+      startUrl: https://cborg.lbl.gov
+      rootUrl: https://cborg.lbl.gov
+      maxDepth: 3

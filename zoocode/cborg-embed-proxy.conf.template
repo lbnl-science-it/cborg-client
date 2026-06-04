@@ -1,0 +1,33 @@
+# nginx reverse proxy template for the CBorg embeddings API.
+# Injects the Authorization header from $CBORG_API_KEY so that
+# roocode's codebase indexer (openai-compatible mode) does not need
+# the key stored in the settings JSON.
+#
+# envsubst replaces $CBORG_API_KEY at container start via the official
+# nginx image entrypoint (/docker-entrypoint.d/20-envsubst-on-templates.sh).
+
+server {
+    listen 8929;
+
+    location / {
+        proxy_pass          https://api.cborg.lbl.gov;
+        proxy_ssl_server_name on;
+
+        # Strip any Authorization header the client sends and replace it
+        # with the key from the environment so the settings file stays clean.
+        proxy_set_header    Authorization "Bearer ${CBORG_API_KEY}";
+
+        # Preserve the original Host so the upstream TLS cert matches.
+        proxy_set_header    Host api.cborg.lbl.gov;
+
+        # Forward standard proxy headers.
+        proxy_set_header    X-Real-IP        $remote_addr;
+        proxy_set_header    X-Forwarded-For  $proxy_add_x_forwarded_for;
+        proxy_set_header    X-Forwarded-Proto $scheme;
+
+        # Increase timeouts for large embedding batches.
+        proxy_connect_timeout 30s;
+        proxy_read_timeout    120s;
+        proxy_send_timeout    30s;
+    }
+}

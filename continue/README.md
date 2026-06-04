@@ -1,6 +1,9 @@
 # VS Code "Continue" Plugin Installation
 
-Integration of CBorg with VS Code "Continue" will enable chat within VS code, in addithion to autocomplete and code indexing.
+> **Note:** This integration has not been tested recently and the instructions below are unlikely
+> to work as written. Proceed with caution.
+
+Integration of CBorg with VS Code "Continue" will enable chat within VS code, in addition to autocomplete and code indexing.
 
 ## Instructions: 
 

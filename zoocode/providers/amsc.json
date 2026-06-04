@@ -1,0 +1,68 @@
+{
+  "AmSC Claude Opus High": {
+    "todoListEnabled": true,
+    "rateLimitSeconds": 0,
+    "consecutiveMistakeLimit": 3,
+    "litellmBaseUrl": "https://api.i2-core.american-science-cloud.org",
+    "litellmApiKey": "$AMSC_I2_API_KEY",
+    "litellmModelId": "claude-opus-high",
+    "litellmUsePromptCache": true,
+    "apiProvider": "litellm",
+    "id": "amsc-claude-opus-high"
+  },
+  "AmSC Claude Opus": {
+    "todoListEnabled": true,
+    "rateLimitSeconds": 0,
+    "consecutiveMistakeLimit": 3,
+    "litellmBaseUrl": "https://api.i2-core.american-science-cloud.org",
+    "litellmApiKey": "$AMSC_I2_API_KEY",
+    "litellmModelId": "claude-opus",
+    "litellmUsePromptCache": true,
+    "apiProvider": "litellm",
+    "id": "amsc-claude-opus"
+  },
+  "AmSC Claude Sonnet High": {
+    "todoListEnabled": true,
+    "rateLimitSeconds": 0,
+    "consecutiveMistakeLimit": 3,
+    "litellmBaseUrl": "https://api.i2-core.american-science-cloud.org",
+    "litellmApiKey": "$AMSC_I2_API_KEY",
+    "litellmModelId": "claude-sonnet-high",
+    "litellmUsePromptCache": true,
+    "apiProvider": "litellm",
+    "id": "amsc-claude-sonnet-high"
+  },
+  "AmSC Claude Sonnet": {
+    "todoListEnabled": true,
+    "rateLimitSeconds": 0,
+    "consecutiveMistakeLimit": 3,
+    "litellmBaseUrl": "https://api.i2-core.american-science-cloud.org",
+    "litellmApiKey": "$AMSC_I2_API_KEY",
+    "litellmModelId": "claude-sonnet",
+    "litellmUsePromptCache": true,
+    "apiProvider": "litellm",
+    "id": "amsc-claude-sonnet"
+  },
+  "AmSC Claude Haiku High": {
+    "todoListEnabled": true,
+    "rateLimitSeconds": 0,
+    "consecutiveMistakeLimit": 3,
+    "litellmBaseUrl": "https://api.i2-core.american-science-cloud.org",
+    "litellmApiKey": "$AMSC_I2_API_KEY",
+    "litellmModelId": "claude-haiku-high",
+    "litellmUsePromptCache": true,
+    "apiProvider": "litellm",
+    "id": "amsc-claude-haiku-high"
+  },
+  "AmSC Claude Haiku": {
+    "todoListEnabled": true,
+    "rateLimitSeconds": 0,
+    "consecutiveMistakeLimit": 3,
+    "litellmBaseUrl": "https://api.i2-core.american-science-cloud.org",
+    "litellmApiKey": "$AMSC_I2_API_KEY",
+    "litellmModelId": "claude-haiku",
+    "litellmUsePromptCache": true,
+    "apiProvider": "litellm",
+    "id": "amsc-claude-haiku"
+  }
+}

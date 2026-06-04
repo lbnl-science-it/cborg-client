@@ -1,0 +1,271 @@
+{
+  "providerProfiles": {
+    "currentApiConfigName": "CBorg Coder (Free)",
+    "apiConfigs": {},
+    "modeApiConfigs": {
+      "architect": "cborg-coder",
+      "code": "cborg-coder",
+      "ask": "cborg-coder",
+      "debug": "cborg-coder",
+      "orchestrator": "cborg-coder"
+    },
+    "migrations": {
+      "rateLimitSecondsMigrated": true,
+      "openAiHeadersMigrated": true,
+      "consecutiveMistakeLimitMigrated": true,
+      "todoListEnabledMigrated": true,
+      "claudeCodeLegacySettingsMigrated": true
+    }
+  },
+  "globalSettings": {
+    "lastShownAnnouncementId": "mar-2026-v3.51.0-gpt-54-slash-skills",
+    "openRouterImageApiKey": "",
+    "openRouterImageGenerationSelectedModel": "",
+    "autoApprovalEnabled": true,
+    "alwaysAllowReadOnly": true,
+    "alwaysAllowReadOnlyOutsideWorkspace": false,
+    "alwaysAllowWrite": false,
+    "alwaysAllowWriteOutsideWorkspace": false,
+    "alwaysAllowWriteProtected": false,
+    "writeDelayMs": 1000,
+    "alwaysAllowMcp": false,
+    "alwaysAllowModeSwitch": false,
+    "alwaysAllowSubtasks": false,
+    "alwaysAllowExecute": false,
+    "alwaysAllowFollowupQuestions": false,
+    "followupAutoApproveTimeoutMs": 60000,
+    "allowedCommands": [
+    ],
+    "deniedCommands": [],
+    "allowedMaxRequests": null,
+    "allowedMaxCost": null,
+    "autoCondenseContext": true,
+    "autoCondenseContextPercent": 50,
+    "includeCurrentTime": true,
+    "includeCurrentCost": false,
+    "maxGitStatusFiles": 1,
+    "includeDiagnosticMessages": true,
+    "maxDiagnosticMessages": 10,
+    "enableCheckpoints": true,
+    "checkpointTimeout": 15,
+    "ttsEnabled": false,
+    "ttsSpeed": 1,
+    "soundEnabled": true,
+    "soundVolume": 0.1,
+    "maxOpenTabsContext": 1,
+    "maxWorkspaceFiles": 1,
+    "showRooIgnoredFiles": false,
+    "enableSubfolderRules": true,
+    "maxImageFileSize": 5,
+    "maxTotalImageSize": 20,
+    "terminalOutputPreviewSize": "small",
+    "terminalShellIntegrationTimeout": 5000,
+    "terminalShellIntegrationDisabled": true,
+    "terminalCommandDelay": 0,
+    "terminalPowershellCounter": false,
+    "terminalZshClearEolMark": true,
+    "terminalZshOhMy": false,
+    "terminalZshP10k": false,
+    "terminalZdotdir": false,
+    "rateLimitSeconds": 0,
+    "experiments": {
+      "preventFocusDisruption": false,
+      "imageGeneration": false,
+      "runSlashCommand": false,
+      "customTools": false
+    },
+    "codebaseIndexModels": {
+      "openai": {
+        "text-embedding-3-small": {
+          "dimension": 1536
+        },
+        "text-embedding-3-large": {
+          "dimension": 3072
+        },
+        "text-embedding-ada-002": {
+          "dimension": 1536
+        }
+      },
+      "ollama": {
+        "nomic-embed-text": {
+          "dimension": 768
+        },
+        "nomic-embed-code": {
+          "dimension": 3584
+        },
+        "mxbai-embed-large": {
+          "dimension": 1024
+        },
+        "all-minilm": {
+          "dimension": 384
+        }
+      },
+      "openai-compatible": {
+        "text-embedding-3-small": {
+          "dimension": 1536
+        },
+        "text-embedding-3-large": {
+          "dimension": 3072
+        },
+        "text-embedding-ada-002": {
+          "dimension": 1536
+        },
+        "nomic-embed-code": {
+          "dimension": 3584
+        }
+      },
+      "gemini": {
+        "gemini-embedding-001": {
+          "dimension": 3072
+        },
+        "text-embedding-004": {
+          "dimension": 3072
+        }
+      },
+      "mistral": {
+        "codestral-embed-2505": {
+          "dimension": 1536
+        }
+      },
+      "vercel-ai-gateway": {
+        "openai/text-embedding-3-small": {
+          "dimension": 1536
+        },
+        "openai/text-embedding-3-large": {
+          "dimension": 3072
+        },
+        "openai/text-embedding-ada-002": {
+          "dimension": 1536
+        },
+        "cohere/embed-v4.0": {
+          "dimension": 1024
+        },
+        "google/gemini-embedding-001": {
+          "dimension": 3072
+        },
+        "google/text-embedding-005": {
+          "dimension": 768
+        },
+        "google/text-multilingual-embedding-002": {
+          "dimension": 768
+        },
+        "amazon/titan-embed-text-v2": {
+          "dimension": 1024
+        },
+        "mistral/codestral-embed": {
+          "dimension": 1536
+        },
+        "mistral/mistral-embed": {
+          "dimension": 1024
+        }
+      },
+      "openrouter": {
+        "openai/text-embedding-3-small": {
+          "dimension": 1536
+        },
+        "openai/text-embedding-3-large": {
+          "dimension": 3072
+        },
+        "openai/text-embedding-ada-002": {
+          "dimension": 1536
+        },
+        "google/gemini-embedding-001": {
+          "dimension": 3072
+        },
+        "mistralai/mistral-embed-2312": {
+          "dimension": 1024
+        },
+        "mistralai/codestral-embed-2505": {
+          "dimension": 1536
+        },
+        "qwen/qwen3-embedding-0.6b": {
+          "dimension": 1024
+        },
+        "qwen/qwen3-embedding-4b": {
+          "dimension": 2560
+        },
+        "qwen/qwen3-embedding-8b": {
+          "dimension": 4096
+        }
+      },
+      "bedrock": {
+        "amazon.titan-embed-text-v1": {
+          "dimension": 1536
+        },
+        "amazon.titan-embed-text-v2:0": {
+          "dimension": 1024
+        },
+        "amazon.titan-embed-image-v1": {
+          "dimension": 1024
+        },
+        "amazon.nova-2-multimodal-embeddings-v1:0": {
+          "dimension": 1024
+        },
+        "cohere.embed-v4:0": {
+          "dimension": 1536
+        },
+        "cohere.embed-english-v3": {
+          "dimension": 1024
+        },
+        "cohere.embed-multilingual-v3": {
+          "dimension": 1024
+        }
+      }
+    },
+    "codebaseIndexConfig": {
+      "codebaseIndexEnabled": true,
+      "codebaseIndexQdrantUrl": "http://localhost:6333",
+      "codebaseIndexEmbedderProvider": "openai-compatible",
+      "codebaseIndexEmbedderBaseUrl": "http://localhost:8929/v1",
+      "codebaseIndexEmbedderModelId": "nomic-embed-text",
+      "codebaseIndexEmbedderModelDimension": 768,
+      "codebaseIndexSearchMinScore": 0.7,
+      "codebaseIndexSearchMaxResults": 20,
+      "codebaseIndexOpenAiCompatibleBaseUrl": "http://localhost:8929/v1",
+      "codebaseIndexBedrockRegion": "",
+      "codebaseIndexBedrockProfile": "",
+      "codebaseIndexOpenRouterSpecificProvider": ""
+    },
+    "language": "en",
+    "telemetrySetting": "disabled",
+    "mcpEnabled": true,
+    "mode": "architect",
+    "customModes": [],
+    "customSupportPrompts": {},
+    "includeTaskHistoryInEnhance": true,
+    "reasoningBlockCollapsed": true,
+    "enterBehavior": "send",
+    "profileThresholds": {
+      "amsc-claude-opus-high": 15,
+      "amsc-claude-opus": 15,
+      "amsc-claude-sonnet-high": 25,
+      "amsc-claude-sonnet": 25,
+      "amsc-claude-haiku-high": 35,
+      "amsc-claude-haiku": 35,
+      "claude-opus-high": 15,
+      "cborg-claude-opus": 15,
+      "cborg-claude-sonnet-high": 25,
+      "cborg-claude-sonnet": 25,
+      "cborg-claude-haiku-high": 35,
+      "cborg-claude-haiku": 35,
+      "cborg-gpt-5.3-codex": 25,
+      "cborg-gpt-high": 15,
+      "cborg-gpt": 15,
+      "cborg-gpt-mini-high": 25,
+      "cborg-gpt-mini": 25,
+      "cborg-gpt-nano-high": 35,
+      "cborg-gpt-nano": 35,
+      "cborg-gemini-pro-high": 15,
+      "cborg-gemini-pro": 15,
+      "cborg-gemini-flash-high": 25,
+      "cborg-gemini-flash": 25,
+      "cborg-gemini-flash-lite-high": 35,
+      "cborg-gemini-flash-lite": 35,
+      "gcp-gemini-pro-high": 15,
+      "gcp-gemini-flash-high": 25,
+      "gcp-gemini-flash": 25
+    },
+    "hasOpenedModeSelector": true,
+    "lastSettingsExportPath": "~/.zoo/zoo-code-settings.json"
+  }
+}

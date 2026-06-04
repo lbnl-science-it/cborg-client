@@ -1,6 +1,6 @@
 """
 
-    CBorg Client MenuBar App for OSX
+    CBorg Client Proxy MenuBar App for OSX
 
     Copyright Notice
     ================
