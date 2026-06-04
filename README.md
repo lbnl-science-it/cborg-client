@@ -4,10 +4,21 @@ Client-side utilities for CBorg API Services
 
 **Contents:**
 
+- /codex: Configuration files for OpenAI Codex CLI with CBorg models
 - /zoocode: Configuration and setup for ZooCode (formerly RooCode) with CBorg models
 - /app: Mac OSX Menu-bar App for Client-side proxy (in development - not working yet)
 - /proxy: Client-side reverse proxy
 - /continue: Managed config.json file for VS Code Continue Plugin
+
+## OpenAI Codex CLI Configuration
+
+`/codex`
+
+Provides ready-to-use configuration files for [OpenAI Codex CLI](https://github.com/openai/codex)
+pre-configured to use CBorg models. Includes a base `config.toml` with the CBorg provider
+definition and individual profile files for GPT and Gemini models.
+
+See [`codex/README.md`](codex/README.md) for setup instructions.
 
 ## Zoo Code Configuration
 
