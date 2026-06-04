@@ -1,0 +1,7 @@
+# ~/.codex/cborg-gpt-large.config.toml
+# High-reasoning profile for complex coding and debugging tasks.
+model = "gpt-5.5"
+model_reasoning_effort = "high"
+model_provider = "cborg"
+personality = "pragmatic"
+plan_mode_reasoning_effort = "high"

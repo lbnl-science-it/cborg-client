@@ -1,0 +1,6 @@
+# ~/.codex/cborg-gpt-mini.config.toml
+# Cost-effective default profile. ~1/10th the cost of cborg-gpt-large.
+model = "gpt-5.4-mini"
+model_reasoning_effort = "medium"
+model_provider = "cborg"
+personality = "pragmatic"

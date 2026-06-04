@@ -1,0 +1,22 @@
+# ~/.codex/config.toml
+# CBorg provider configuration for OpenAI Codex CLI.
+# Copy this file to ~/.codex/config.toml, then copy the profile
+# files you want to use (e.g. cborg-gpt-mini.config.toml) into ~/.codex/.
+
+# Set the default profile 
+# Note: This is required for the Codex App and VSCode Extension which don't support --profile arg on launch.
+profile = "cborg-gpt-mini"
+
+[model_providers.cborg]
+name = "CBorg API"
+base_url = "https://api.cborg.lbl.gov/v1"
+env_key = "CBORG_API_KEY"
+supports_websockets = false
+wire_api = "responses"
+
+# Recommended setting - Fast mode costs 2.5x more for 50% speedup
+[features]
+fast_mode = false
+
+[notice]
+fast_default_opt_out = true

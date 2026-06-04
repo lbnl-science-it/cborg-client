@@ -1,0 +1,5 @@
+# ~/.codex/cborg-gemini-pro.config.toml
+# Gemini Pro (high reasoning) via CBorg. Reserve for high-complexity tasks.
+model = "gemini-pro-high"
+model_provider = "cborg"
+personality = "pragmatic"

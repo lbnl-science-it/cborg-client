@@ -1,0 +1,5 @@
+# ~/.codex/cborg-gemini-flash.config.toml
+# Gemini Flash (high reasoning) via CBorg. Cost-effective Gemini option.
+model = "gemini-flash-high"
+model_provider = "cborg"
+personality = "pragmatic"

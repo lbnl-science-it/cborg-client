@@ -1,0 +1,5 @@
+# ~/.codex/openai-gpt-large.config.toml
+# OpenAI direct access via ChatGPT Enterprise sign-on (no CBORG_API_KEY needed).
+model = "gpt-5.5"
+model_reasoning_effort = "high"
+personality = "pragmatic"
