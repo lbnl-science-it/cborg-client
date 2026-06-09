@@ -1,0 +1,26 @@
+name: Security Scan and SecObserve Upload
+
+permissions:
+  contents: read
+  security-events: write
+
+on:
+  push:
+    branches: [ '**' ]
+  workflow_dispatch:
+    inputs:
+      fetch_depth:
+        description: 'Number of commits to fetch (0 for all history)'
+        required: false
+        default: '1'
+        type: string
+
+env:
+  WORKFLOW_VERSION: "2.0.0"
+
+jobs:
+  security_scan:
+    uses: lbnl-science-it/security-workflows/.github/workflows/security_scan.yml@main
+    secrets: inherit
+    with:
+      fetch_depth: ${{ inputs.fetch_depth || '1' }}
