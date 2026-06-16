@@ -8,3 +8,5 @@ proxy/venv
 **/zoo-code*.json
 **/roo-code*.json
 **/mcp_settings.json
+opencode/build-opencode
+opencode/opencode
