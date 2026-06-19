@@ -20,8 +20,13 @@
           "textVerbosity": "low",
           "reasoningSummary": "off"
         },
+        "gemini-flash-lite": {
+          "name": "Gemini Flash Lite ($)",
+          "textVerbosity": "low",
+          "reasoningSummary": "off"
+        },
         "gemini-flash": {
-          "name": "Gemini Flash ($)",
+          "name": "Gemini Flash ($$)",
           "textVerbosity": "low",
           "reasoningSummary": "off"
         },
@@ -36,7 +41,7 @@
           "reasoningSummary": "off"
         },
         "claude-sonnet-high": {
-          "name": "Claude Sonnet ($$)",
+          "name": "Claude Sonnet ($$$)",
           "textVerbosity": "low",
           "reasoningSummary": "off"
         },
