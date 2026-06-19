@@ -241,9 +241,24 @@ gh release create "$TAG" \
 # Move the floating 'latest' tag/release so users can always download
 # from a stable URL: .../releases/download/latest/opencode-darwin-arm64.zip
 echo "==> Updating floating 'latest' release..."
+
+# Get the SHA of the commit that the versioned tag points to, then
+# create or force-update the 'latest' tag via the GitHub API.
+# This avoids needing a configured git remote push target.
+VERSIONED_SHA="$(gh api repos/${GH_REPO}/git/ref/tags/${TAG#v} \
+  --jq '.object.sha' 2>/dev/null || \
+  gh api repos/${GH_REPO}/git/ref/tags/${TAG} \
+  --jq '.object.sha')"
+
+# Delete existing 'latest' tag ref if present, then recreate it
+gh api --method DELETE repos/${GH_REPO}/git/refs/tags/latest 2>/dev/null || true
+
+gh api --method POST repos/${GH_REPO}/git/refs \
+  --field ref="refs/tags/latest" \
+  --field sha="$VERSIONED_SHA" > /dev/null
+
+# Delete old 'latest' release if present, then recreate with current assets
 gh release delete latest --repo "$GH_REPO" --yes 2>/dev/null || true
-git -C "$BUILD_DIR" tag -f latest
-git -C "$BUILD_DIR" push "https://github.com/${GH_REPO}.git" refs/tags/latest --force
 
 gh release create latest \
   --repo "$GH_REPO" \
@@ -251,6 +266,7 @@ gh release create latest \
   --notes "Floating pointer to the most recent litellm build. Currently \`${TAG}\`.
 
 ${RELEASE_NOTES}" \
+  --prerelease \
   --latest=false \
   "$RELEASE_DIR"/*.tar.gz \
   "$RELEASE_DIR"/*.zip
