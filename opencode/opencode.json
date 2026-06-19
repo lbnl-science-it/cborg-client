@@ -1,0 +1,72 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "enabled_providers": ["litellm"],
+  "model": "litellm/cborg-coder",
+  "provider": {
+    "litellm": {
+      "name": "CBorg API",
+      "options": {
+        "baseURL": "https://api.cborg.lbl.gov/v1",
+        "apiKey": "{env:CBORG_API_KEY}"
+      },
+      "models": {
+        "cborg-coder": {
+          "name": "CBorg Coder",
+          "textVerbosity": "low",
+          "reasoningSummary": "off"
+        },
+        "cborg-coder-fast": {
+          "name": "CBorg Coder Fast",
+          "textVerbosity": "low",
+          "reasoningSummary": "off"
+        },
+        "gemini-flash": {
+          "name": "Gemini Flash ($)",
+          "textVerbosity": "low",
+          "reasoningSummary": "off"
+        },
+        "gemini-pro-high": {
+          "name": "Gemini Pro ($$$)",
+          "textVerbosity": "low",
+          "reasoningSummary": "off"
+        },
+        "gpt-codex": {
+          "name": "GPT Codex ($$)",
+          "textVerbosity": "low",
+          "reasoningSummary": "off"
+        },
+        "claude-sonnet-high": {
+          "name": "Claude Sonnet ($$)",
+          "textVerbosity": "low",
+          "reasoningSummary": "off"
+        },
+        "claude-opus-high": {
+          "name": "Claude Opus ($$$$)",
+          "textVerbosity": "low",
+          "reasoningSummary": "off"
+        }
+      }
+    }
+  },
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://api.cborg.lbl.gov/mcp/context7",
+      "enabled": true,
+      "headers": {
+        "Authorization": "Bearer {env:CBORG_API_KEY}"
+      }
+    },
+    "valency": {
+      "type": "remote",
+      "url": "https://api.cborg.lbl.gov/mcp/valency",
+      "enabled": true,
+      "headers": {
+        "Authorization": "Bearer {env:CBORG_API_KEY}"
+      }
+    }
+  },
+  "tools": {
+    "*": true
+  }
+}

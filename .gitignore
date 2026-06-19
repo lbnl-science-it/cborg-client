@@ -9,4 +9,5 @@ proxy/venv
 **/roo-code*.json
 **/mcp_settings.json
 opencode/build-opencode
+opencode/release-artifacts
 opencode/opencode
