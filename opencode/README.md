@@ -77,8 +77,8 @@ opencode --version
 
 ```bash
 # Clone this repo
-git clone https://github.com/awschmeder/opencode.git
-cd opencode
+git clone https://github.com/lbnl-science-it/cborg-client.git
+cd cborg-client/opencode
 
 # Build for the current platform and install to /usr/local/bin
 make build
@@ -128,12 +128,13 @@ pre-declares the following models:
 
 | Model ID | Display name |
 |----------|-------------|
-| `cborg-coder` | CBorg Coder |
 | `cborg-coder-fast` | CBorg Coder Fast |
-| `gemini-flash` | Gemini Flash ($) |
+| `cborg-coder` | CBorg Coder |
+| `gemini-flash-lite` | Gemini Flash Lite ($) |
+| `gemini-flash` | Gemini Flash ($$) |
 | `gemini-pro-high` | Gemini Pro ($$$) |
 | `gpt-codex` | GPT Codex ($$) |
-| `claude-sonnet-high` | Claude Sonnet ($$) |
+| `claude-sonnet-high` | Claude Sonnet ($$$) |
 | `claude-opus-high` | Claude Opus ($$$$) |
 
 Additional models available on the proxy are discovered automatically at startup.
