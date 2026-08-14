@@ -15,11 +15,11 @@ on:
         type: string
 
 env:
-  WORKFLOW_VERSION: "2.1.0"
+  WORKFLOW_VERSION: "2.1.1"
 
 jobs:
   security_scan:
-    uses: lbnl-science-it/security-workflows/.github/workflows/security_scan.yml@4e24352373ae3bd8801fbcf9b74ddbd50e96b214 # published main, 2026-08-13
+    uses: lbnl-science-it/security-workflows/.github/workflows/security_scan.yml@ccd5aa62e9a6ee145b5791083a01abebc861999b # published main, 2026-08-13
     # Named, not `secrets: inherit`. Inheriting hands the reusable workflow every
     # secret this repository holds, not the one it needs (CWE-250); the pinned
     # central workflow declares SO_API_TOKEN under `workflow_call.secrets`, so it
