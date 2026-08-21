@@ -3,9 +3,11 @@
 # Copy this file to ~/.codex/config.toml, then copy the profile
 # files you want to use (e.g. cborg-gpt-mini.config.toml) into ~/.codex/.
 
-# Set the default profile 
-# Note: This is required for the Codex App and VSCode Extension which don't support --profile arg on launch.
-profile = "cborg-gpt-mini"
+# Set the default model, `profile` is not accepted
+personality = "pragmatic"
+model = "cborg-coder"
+model_provider = "cborg"
+model_reasoning_effort = "low"
 
 [model_providers.cborg]
 name = "CBorg API"
