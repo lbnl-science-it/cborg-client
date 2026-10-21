@@ -9,6 +9,7 @@ Configuration files for [OpenAI Codex CLI](https://github.com/openai/codex) usin
 
 ```bash
 cp config.toml ~/.codex/config.toml
+cp cborg-coder-max.config.toml ~/.codex/
 cp cborg-gpt-mini.config.toml ~/.codex/
 cp cborg-gpt-large.config.toml ~/.codex/
 cp cborg-gemini-pro.config.toml ~/.codex/
@@ -39,11 +40,18 @@ codex --profile cborg-gemini-pro
 
 | Profile | Model | Notes |
 |---------|-------|-------|
+| `cborg-coder-max` | `cborg-coder-max` | Recommended -- free, experimental, 600K context |
 | `cborg-gpt-mini` | `gpt-5.4-mini` | Default -- cost-effective, medium reasoning |
 | `cborg-gpt-large` | `gpt-5.5` | High reasoning, ~10x cost of mini |
 | `cborg-gemini-pro` | `gemini-pro-high` | Gemini Pro via CBorg |
 | `cborg-gemini-flash` | `gemini-flash-high` | Gemini Flash via CBorg |
 | `openai-gpt-large` | `gpt-5.5` | OpenAI direct (ChatGPT Enterprise) |
 | `openai-gpt-mini` | `gpt-5.4-mini` | OpenAI direct (ChatGPT Enterprise) |
+
+## MCP Servers
+
+`config.toml` enables the CBorg-proxied Tavily (web search), Context7 (library docs), and
+Valency (scientific literature) MCP servers, authenticated with `CBORG_API_KEY`. Run `/mcp`
+inside Codex to confirm they are connected.
 
 See the [CBorg Codex CLI docs](https://cborg.lbl.gov/tools_codex) for full instructions and cost-saving tips.

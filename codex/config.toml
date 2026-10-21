@@ -22,3 +22,21 @@ fast_mode = false
 
 [notice]
 fast_default_opt_out = true
+
+# CBorg-proxied MCP servers, authenticated with your CBorg API key.
+# Remove any you don't need -- each enabled server adds tool definitions to every request.
+
+# Web search
+[mcp_servers.tavily]
+url = "https://api.cborg.lbl.gov/mcp/tavily"
+bearer_token_env_var = "CBORG_API_KEY"
+
+# Up-to-date library documentation
+[mcp_servers.context7]
+url = "https://api.cborg.lbl.gov/mcp/context7"
+bearer_token_env_var = "CBORG_API_KEY"
+
+# Scientific literature search (arXiv, bioRxiv, medRxiv)
+[mcp_servers.valency]
+url = "https://api.cborg.lbl.gov/mcp/valency"
+bearer_token_env_var = "CBORG_API_KEY"
