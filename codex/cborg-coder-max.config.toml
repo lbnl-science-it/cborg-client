@@ -1,8 +1,0 @@
-# ~/.codex/cborg-coder-max.config.toml
-# Free, experimental on-prem coding model with a very large context window.
-# Context is capped at 600K and auto-compacted at 400K to keep long sessions responsive.
-model = "cborg-coder-max"
-model_reasoning_effort = "high"
-model_context_window = 600000
-model_auto_compact_token_limit = 400000
-model_provider = "cborg"

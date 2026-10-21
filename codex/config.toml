@@ -3,11 +3,16 @@
 # Copy this file to ~/.codex/config.toml, then copy the profile
 # files you want to use (e.g. cborg-gpt-mini.config.toml) into ~/.codex/.
 
-# Set the default model, `profile` is not accepted
-personality = "pragmatic"
-model = "cborg-coder"
+# Default model, used when no --profile is given (and always by the Codex App and VSCode Extension).
+# A top-level `profile = "..."` key is not accepted.
+# cborg-coder-max is free and experimental; context is capped at 600K and auto-compacted at 400K
+# to keep long sessions responsive.
+model = "cborg-coder-max"
+model_reasoning_effort = "high"
+model_context_window = 600000
+model_auto_compact_token_limit = 400000
 model_provider = "cborg"
-model_reasoning_effort = "low"
+personality = "pragmatic"
 
 [model_providers.cborg]
 name = "CBorg API"
