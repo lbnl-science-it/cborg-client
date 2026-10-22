@@ -1,3 +1,4 @@
+#:schema https://developers.openai.com/codex/config-schema.json
 # ~/.codex/config.toml
 # CBorg provider configuration for OpenAI Codex CLI.
 # Copy this file to ~/.codex/config.toml, then copy the profile
@@ -31,7 +32,7 @@ fast_default_opt_out = true
 # CBorg-proxied MCP servers, authenticated with your CBorg API key.
 # Remove any you don't need -- each enabled server adds tool definitions to every request.
 
-# Web search
+# Web search & content extraction
 [mcp_servers.tavily]
 url = "https://api.cborg.lbl.gov/mcp/tavily"
 bearer_token_env_var = "CBORG_API_KEY"
