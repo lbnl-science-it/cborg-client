@@ -9,7 +9,6 @@ Configuration files for [OpenAI Codex CLI](https://github.com/openai/codex) usin
 
 ```bash
 cp config.toml ~/.codex/config.toml
-cp cborg-coder-max.config.toml ~/.codex/
 cp cborg-gpt-mini.config.toml ~/.codex/
 cp cborg-gpt-large.config.toml ~/.codex/
 cp cborg-gemini-pro.config.toml ~/.codex/
@@ -28,20 +27,20 @@ export CBORG_API_KEY=<your-key>
 ## Usage
 
 ```bash
-# Use the default profile (cborg-gpt-mini)
+# Use the default model from config.toml (cborg-coder-max)
 codex
 
 # Switch profiles with --profile
+codex --profile cborg-gpt-mini
 codex --profile cborg-gpt-large
-codex --profile cborg-gemini-pro
 ```
 
 ## Profiles
 
 | Profile | Model | Notes |
 |---------|-------|-------|
-| `cborg-coder-max` | `cborg-coder-max` | Recommended -- free, experimental, 600K context |
-| `cborg-gpt-mini` | `gpt-5.4-mini` | Default -- cost-effective, medium reasoning |
+| (none) | `cborg-coder-max` | Default, set in `config.toml` -- free, experimental, 600K context |
+| `cborg-gpt-mini` | `gpt-5.4-mini` | Cost-effective, medium reasoning |
 | `cborg-gpt-large` | `gpt-5.5` | High reasoning, ~10x cost of mini |
 | `cborg-gemini-pro` | `gemini-pro-high` | Gemini Pro via CBorg |
 | `cborg-gemini-flash` | `gemini-flash-high` | Gemini Flash via CBorg |
